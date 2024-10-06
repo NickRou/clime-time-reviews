@@ -1,33 +1,56 @@
 "use server";
+
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "../utils/supabase/server";
 
-const getURL = () => {
-  let url =
-    process?.env?.NEXT_PUBLIC_SITE_URL ?? // Set this to your site URL in production env.
-    process?.env?.NEXT_PUBLIC_VERCEL_URL ?? // Automatically set by Vercel.
-    "http://localhost:3000/";
-  // Make sure to include `https://` when not localhost.
-  url = url.startsWith("http") ? url : `https://${url}`;
-  // Make sure to include a trailing `/`.
-  url = url.endsWith("/") ? url : `${url}/`;
-  return url;
-};
-
-export async function login() {
+export async function login(email: string, password: string) {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: getURL(),
-    },
-  });
+  const data = {
+    email: email,
+    password: password,
+  };
 
-  if (data.url) {
-    redirect(data.url); // use the redirect API for your server framework
-  }
+  const { error } = await supabase.auth.signInWithPassword(data);
+
   if (error) {
-    console.log(error);
+    redirect("/login?message=Invalid email or password");
   }
+
+  revalidatePath("/", "layout"); // clears all cache data
+  redirect("/");
+}
+
+export async function signup(
+  email: string,
+  password: string,
+  displayName: string
+) {
+  const supabase = await createClient();
+
+  const data = {
+    email: email,
+    password: password,
+    options: {
+      data: {
+        display_name: displayName,
+      },
+    },
+  };
+
+  const { error } = await supabase.auth.signUp(data);
+
+  if (error) {
+    redirect("/login?message=Error signing up");
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/login");
+}
+
+export async function logout() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/login");
 }
