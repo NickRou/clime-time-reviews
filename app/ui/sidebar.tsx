@@ -24,10 +24,10 @@ import {
   UserButton,
   useUser,
 } from "@clerk/nextjs";
-import ReviewCard from "@/app/ui/review-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
+import UserReviews from "@/components/UserReviews";
 
 export default function HomePage() {
   return (
@@ -46,14 +46,7 @@ export default function HomePage() {
             </Button>
           </SignedIn>
         </header>
-        <ReviewCard
-          name="John Doe"
-          rating={4}
-          date="October 1, 2024"
-          address="123 Main St, Anytown, USA"
-          restaurantName="The Great Italian Bistro"
-          review="The food was fantastic! The service was prompt and friendly, and the ambiance was very welcoming. Highly recommended!"
-        />
+        <UserReviews />
       </SidebarInset>
     </SidebarProvider>
   );
