@@ -1,5 +1,5 @@
-import Dashboard from "@/components/Dashboard";
+import UserReviews from "@/components/UserReviews";
 
 export default function Page() {
-  return <Dashboard></Dashboard>;
+  return <UserReviews></UserReviews>;
 }

@@ -17,6 +17,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Link from "next/link";
 import { getFriends } from "@/app/actions/manage-friends";
+import { Button } from "@/components/ui/button";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [following, setFollowing] = useState<string[]>([]);
@@ -38,7 +39,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader className="h-16 border-b border-sidebar-border flex justify-center items-center">
-        <h2 className="text-lg font-bold">CLIME TIME REVIEWS</h2>
+        <h2 className="text-lg font-bold">
+          <Link href="/">CLIME TIME REVIEWS</Link>
+        </h2>
       </SidebarHeader>
       <SidebarContent>
         <div className="flex items-center gap-2 pt-4 pl-3">
@@ -49,9 +52,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <Command>
             <CommandList>
               <CommandEmpty>No users found.</CommandEmpty>
-              <CommandGroup>
-                <Link href="/friends">Manage Friends</Link>
-              </CommandGroup>
               <CommandGroup heading="Users">
                 <ScrollArea className="h-[300px]">
                   {isLoading ? (
@@ -73,6 +73,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </ScrollArea>
               </CommandGroup>
             </CommandList>
+            <CommandGroup className="pl-2">
+              <Button>
+                <Link href="/friends">Manage Friends</Link>
+              </Button>
+            </CommandGroup>
           </Command>
         </aside>
       </SidebarContent>

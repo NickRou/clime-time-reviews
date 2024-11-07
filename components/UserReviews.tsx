@@ -5,6 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarIcon, StarIcon } from "lucide-react";
 import { getReviews } from "@/app/actions/get-reviews";
 import { QueryResultRow } from "@vercel/postgres";
+import dynamic from "next/dynamic";
+
+// Dynamically import the Map component to avoid SSR issues with Leaflet
+const Map = dynamic(() => import("./Map"), { ssr: false });
 
 export default function UserReviews() {
   const [reviews, setReviews] = useState<QueryResultRow[]>([]);
@@ -30,15 +34,15 @@ export default function UserReviews() {
   }
 
   return (
-    <div className="container py-10 px-4 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold mb-6">Reviews From Friends</h1>
-      <div className="max-w-2xl mx-0">
-        {reviews.length === 0 ? (
-          <p className="text-muted-foreground">
-            No reviews from your friends :/
-          </p>
-        ) : (
-          <div className="container mx-auto">
+    <div className="flex flex-col md:flex-row gap-6 py-10 px-4 sm:px-6 lg:px-8">
+      <div className="w-full md:w-2/5 max-h-[calc(100vh-200px)] overflow-y-auto">
+        <h1 className="text-3xl font-bold mb-6">Reviews From Friends</h1>
+        <div className="flex flex-col md:flex-row gap-6">
+          {reviews.length === 0 ? (
+            <p className="text-muted-foreground">
+              No reviews from your friends :/
+            </p>
+          ) : (
             <div className="space-y-4">
               {reviews.map((review) => (
                 <Card key={`card-${review.id}`} className="overflow-hidden">
@@ -95,8 +99,11 @@ export default function UserReviews() {
                 </Card>
               ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
+      </div>
+      <div className="w-full md:w-3/5 h-[calc(100vh-200px)]">
+        <Map reviews={reviews} />
       </div>
     </div>
   );
