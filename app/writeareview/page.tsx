@@ -1,4 +1,4 @@
-import WriteReviewForm from "./WriteReviewForm";
+import WriteReviewForm from "../../components/WriteReviewForm";
 
 export default function WriteReviewPage() {
   return (

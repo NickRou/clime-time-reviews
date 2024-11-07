@@ -1,5 +1,5 @@
-import HomePage from "@/app/ui/sidebar";
+import Dashboard from "@/components/Dashboard";
 
-export default function Home() {
-  return <HomePage></HomePage>;
+export default function Page() {
+  return <Dashboard></Dashboard>;
 }
