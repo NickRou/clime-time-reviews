@@ -4,6 +4,11 @@ import { sql } from "@vercel/postgres";
 import { auth } from "@clerk/nextjs/server";
 import { getClerkUsers } from "@/app/actions/get-users";
 
+interface ClerkUser {
+  id: string;
+  username: string;
+}
+
 export async function getFriends() {
   const { userId } = await auth();
   if (!userId) {
@@ -23,12 +28,12 @@ export async function getFriends() {
     WHERE following_id = ${userId}
   `;
   return {
-    following: following.rows.map((row) =>
-      allClerkUsers.find((user) => user.id === row.id),
-    ),
-    followers: followers.rows.map((row) =>
-      allClerkUsers.find((user) => user.id === row.id),
-    ),
+    following: following.rows
+      .map((row) => allClerkUsers.find((user) => user.id === row.id))
+      .filter((user): user is ClerkUser => user !== undefined),
+    followers: followers.rows
+      .map((row) => allClerkUsers.find((user) => user.id === row.id))
+      .filter((user): user is ClerkUser => user !== undefined),
   };
 }
 

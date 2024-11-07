@@ -12,7 +12,8 @@ export async function getReviews(): Promise<{
   if (!userId) return { reviews: [], error: null };
 
   const friends = await getFriends();
-  const followingIds = friends.following.map((user) => user.id);
+
+  const followingIds = friends.following.map((user) => user?.id);
 
   if (followingIds.length === 0) {
     return { reviews: [], error: null };
