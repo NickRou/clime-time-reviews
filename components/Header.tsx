@@ -49,6 +49,13 @@ const Header = () => {
               >
                 Write a Review
               </Link>
+              <Link
+                href="/managereviews"
+                className="inline-block px-4 py-2 text-md font-medium text-black hover:shadow-lg"
+                aria-label="Manage Reviews"
+              >
+                Manage Reviews
+              </Link>
             </SignedIn>
           </div>
 
@@ -113,6 +120,12 @@ const Header = () => {
                       className="text-md font-medium text-black hover:text-gray-700"
                     >
                       Write a Review
+                    </Link>
+                    <Link
+                      href="/managereviews"
+                      className="text-md font-medium text-black hover:text-gray-700"
+                    >
+                      Manage Reviews
                     </Link>
                   </SignedIn>
                 </nav>

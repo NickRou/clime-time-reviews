@@ -15,6 +15,8 @@ export interface UserReview extends QueryResultRow {
   date: string;
   rating: number;
   review: string;
+  tags: string[];
+  what_to_order: string;
 }
 
 export interface Friend extends QueryResultRow {

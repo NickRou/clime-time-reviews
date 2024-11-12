@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { CalendarIcon, StarIcon } from "lucide-react";
+import { CalendarIcon, StarIcon, PlusIcon, XIcon } from "lucide-react";
 import { format } from "date-fns";
 
 import { cn } from "@/lib/utils";
@@ -42,11 +42,17 @@ const formSchema = z.object({
   review: z.string().min(10, {
     message: "Review must be at least 10 characters.",
   }),
+  whatToOrder: z.string().min(2, {
+    message: "What to order must be at least 2 characters.",
+  }),
+  tags: z.array(z.string()),
 });
 
 export default function WriteReviewForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [tags, setTags] = useState<string[]>([]);
+  const [newTag, setNewTag] = useState("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -56,15 +62,34 @@ export default function WriteReviewForm() {
       address: "",
       restaurantName: "",
       review: "",
+      whatToOrder: "",
+      tags: [],
     },
   });
+
+  const addTag = () => {
+    if (newTag.trim() !== "" && !tags.includes(newTag.trim())) {
+      setTags([...tags, newTag.trim()]);
+      form.setValue("tags", [...tags, newTag.trim()]);
+      setNewTag("");
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    const updatedTags = tags.filter((tag) => tag !== tagToRemove);
+    setTags(updatedTags);
+    form.setValue("tags", updatedTags);
+  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
       if (key === "date") {
-        formData.append(key, format(value, "yyyy-MM-dd"));
+        if (value instanceof Date)
+          formData.append(key, format(value, "yyyy-MM-dd"));
+      } else if (key === "tags") {
+        formData.append(key, JSON.stringify(value));
       } else {
         formData.append(key, value.toString());
       }
@@ -186,6 +211,19 @@ export default function WriteReviewForm() {
         />
         <FormField
           control={form.control}
+          name="whatToOrder"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>What To Order</FormLabel>
+              <FormControl>
+                <Input placeholder="Recommended dishes" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="review"
           render={({ field }) => (
             <FormItem>
@@ -199,6 +237,56 @@ export default function WriteReviewForm() {
               </FormControl>
               <FormDescription>
                 Please provide a detailed review of your experience.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="tags"
+          render={() => (
+            <FormItem>
+              <FormLabel>Tags</FormLabel>
+              <FormControl>
+                <div className="flex flex-wrap gap-2">
+                  {tags.map((tag, index) => (
+                    <div
+                      key={index}
+                      className="bg-primary text-primary-foreground px-2 py-1 rounded-full flex items-center"
+                    >
+                      {tag}
+                      <button
+                        type="button"
+                        onClick={() => removeTag(tag)}
+                        className="ml-2 text-primary-foreground hover:text-red-500"
+                      >
+                        <XIcon className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                  <div className="flex items-center">
+                    <Input
+                      placeholder="Add a tag"
+                      value={newTag}
+                      onChange={(e) => setNewTag(e.target.value)}
+                      className="w-32"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={addTag}
+                      className="ml-2"
+                    >
+                      <PlusIcon className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </FormControl>
+              <FormDescription>
+                Add tags to categorize your review (e.g., cuisine type,
+                atmosphere).
               </FormDescription>
               <FormMessage />
             </FormItem>

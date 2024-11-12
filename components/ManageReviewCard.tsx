@@ -1,8 +1,24 @@
-import { UserReview } from "@/lib/types";
+"use client";
 
-const ReviewCard = ({ review }: { review: UserReview }) => {
+import { UserReview } from "@/lib/types";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
+import { useTransition } from "react";
+import { deleteReview } from "@/app/actions/reviews";
+
+export default function ReviewCard({ review }: { review: UserReview }) {
+  const [isPending, startTransition] = useTransition();
+
+  const handleDelete = async () => {
+    if (confirm("Are you sure you want to delete this review?")) {
+      startTransition(async () => {
+        await deleteReview(review.review_id);
+      });
+    }
+  };
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+    <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 relative">
       <div className="flex justify-between items-start">
         <div>
           {/* Restaurant Name */}
@@ -62,8 +78,27 @@ const ReviewCard = ({ review }: { review: UserReview }) => {
           </div>
         </div>
       )}
+
+      {/* Edit and Delete Buttons */}
+      <div className="absolute bottom-4 right-4 flex space-x-2">
+        {/* <Button
+          variant="outline"
+          size="icon"
+          onClick={() => onEdit(review.review_id)}
+          aria-label="Edit review"
+        >
+          <Edit className="h-4 w-4" />
+        </Button> */}
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handleDelete}
+          disabled={isPending}
+          aria-label="Delete review"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   );
-};
-
-export default ReviewCard;
+}

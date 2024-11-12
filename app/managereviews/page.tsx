@@ -1,19 +1,18 @@
 "use client";
 
-import { getReviews } from "@/app/actions/reviews";
+import { getCurrentUserReviews } from "@/app/actions/reviews";
 import { UserReview } from "@/lib/types";
 import { useEffect, useState } from "react";
-import ReviewCard from "./ReviewCard";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import ManageReviewCard from "@/components/ManageReviewCard";
 
-const UserReviews = () => {
+const ManageReviewsPage = () => {
   const [reviews, setReviews] = useState<UserReview[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchReviews() {
-      const result = await getReviews();
+      const result = await getCurrentUserReviews();
       setReviews(result.reviews);
       setError(result.error);
       setLoading(false);
@@ -47,30 +46,23 @@ const UserReviews = () => {
       <div className="max-w-4xl mx-auto px-4 py-12">
         {/* Header */}
         <h1 className="sm:text-4xl md:text-4xl lg:text-4xl xl:text-4xl font-bold text-center mb-12 text-black ">
-          --- Reviews From Your Friends ---
+          --- Your Reviews ---
         </h1>
-        <SignedOut>
-          <p className="text-center mb-12 text-black">
-            Log in to see reviews from your friends.
-          </p>
-        </SignedOut>
         {/* Reviews Grid */}
-        <SignedIn>
-          <div className="space-y-6 overflow-y-auto max-h-full">
-            {reviews.length === 0 ? (
-              <p className="text-center mb-12 text-black">
-                No reviews from your friends :/
-              </p>
-            ) : (
-              reviews.map((review) => (
-                <ReviewCard key={review.review_id} review={review} />
-              ))
-            )}
-          </div>
-        </SignedIn>
+        <div className="space-y-6 overflow-y-auto max-h-full">
+          {reviews.length === 0 ? (
+            <p className="text-center mb-12 text-black">
+              You have no reviews :/
+            </p>
+          ) : (
+            reviews.map((review) => (
+              <ManageReviewCard key={review.review_id} review={review} />
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
-export default UserReviews;
+export default ManageReviewsPage;
