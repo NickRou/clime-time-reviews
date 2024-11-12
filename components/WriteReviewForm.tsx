@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { submitReview } from "../app/actions/submit-review";
+import { submitReview } from "@/app/actions/reviews";
 
 const formSchema = z.object({
   rating: z.number().min(1).max(5),
@@ -130,7 +130,7 @@ export default function WriteReviewForm() {
                       variant={"outline"}
                       className={cn(
                         "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground",
+                        !field.value && "text-muted-foreground"
                       )}
                     >
                       {field.value ? (
@@ -173,7 +173,7 @@ export default function WriteReviewForm() {
                         "h-6 w-6 cursor-pointer",
                         star <= field.value
                           ? "text-yellow-400 fill-yellow-400"
-                          : "text-gray-300",
+                          : "text-gray-300"
                       )}
                       onClick={() => form.setValue("rating", star)}
                     />
