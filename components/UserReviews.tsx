@@ -4,6 +4,7 @@ import { getReviews } from "@/app/actions/reviews";
 import { UserReview } from "@/lib/types";
 import { useEffect, useState } from "react";
 import ReviewCard from "./ReviewCard";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 
 const UserReviews = () => {
   const [reviews, setReviews] = useState<UserReview[]>([]);
@@ -48,12 +49,25 @@ const UserReviews = () => {
         <h1 className="text-4xl font-bold text-center mb-12 text-black">
           --- Reviews From Your Friends ---
         </h1>
+        <SignedOut>
+          <p className="text-center mb-12 text-black">
+            Log in to see reviews from your friends.
+          </p>
+        </SignedOut>
         {/* Reviews Grid */}
-        <div className="space-y-6 overflow-y-auto max-h-full">
-          {reviews.map((review) => (
-            <ReviewCard key={review.review_id} review={review} />
-          ))}
-        </div>
+        <SignedIn>
+          <div className="space-y-6 overflow-y-auto max-h-full">
+            {reviews.length === 0 ? (
+              <p className="text-center mb-12 text-black">
+                No reviews from your friends :/
+              </p>
+            ) : (
+              reviews.map((review) => (
+                <ReviewCard key={review.review_id} review={review} />
+              ))
+            )}
+          </div>
+        </SignedIn>
       </div>
     </div>
   );

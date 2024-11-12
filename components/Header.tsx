@@ -34,20 +34,22 @@ const Header = () => {
             >
               Home
             </Link>
-            <Link
-              href="/friends"
-              className="inline-block px-4 py-2 text-md font-medium text-black hover:shadow-lg"
-              aria-label="Friends"
-            >
-              Friends
-            </Link>
-            <Link
-              href="/writeareview"
-              className="inline-block px-4 py-2 text-md font-medium text-black hover:shadow-lg"
-              aria-label="Write a Review"
-            >
-              Write a Review
-            </Link>
+            <SignedIn>
+              <Link
+                href="/friends"
+                className="inline-block px-4 py-2 text-md font-medium text-black hover:shadow-lg"
+                aria-label="Friends"
+              >
+                Friends
+              </Link>
+              <Link
+                href="/writeareview"
+                className="inline-block px-4 py-2 text-md font-medium text-black hover:shadow-lg"
+                aria-label="Write a Review"
+              >
+                Write a Review
+              </Link>
+            </SignedIn>
           </div>
 
           {/* Desktop Auth components */}
@@ -99,18 +101,20 @@ const Header = () => {
                   >
                     Home
                   </Link>
-                  <Link
-                    href="/friends"
-                    className="text-md font-medium text-black hover:text-gray-700"
-                  >
-                    Dashboard
-                  </Link>
-                  <Link
-                    href="/writeareview"
-                    className="text-md font-medium text-black hover:text-gray-700"
-                  >
-                    Write a Review
-                  </Link>
+                  <SignedIn>
+                    <Link
+                      href="/friends"
+                      className="text-md font-medium text-black hover:text-gray-700"
+                    >
+                      Friends
+                    </Link>
+                    <Link
+                      href="/writeareview"
+                      className="text-md font-medium text-black hover:text-gray-700"
+                    >
+                      Write a Review
+                    </Link>
+                  </SignedIn>
                 </nav>
 
                 {/* Mobile Auth Components */}
