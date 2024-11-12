@@ -37,9 +37,9 @@ const Header = () => {
             <Link
               href="/friends"
               className="inline-block px-4 py-2 text-md font-medium text-black hover:shadow-lg"
-              aria-label="Dashboard"
+              aria-label="Friends"
             >
-              Dashboard
+              Friends
             </Link>
             <Link
               href="/writeareview"
@@ -61,6 +61,9 @@ const Header = () => {
             </SignedOut>
             <SignedIn>
               <div className="flex items-center space-x-4 cursor-pointer">
+                <span className="text-md font-medium text-black">
+                  {"[profile] ->"}
+                </span>
                 <UserButton
                   appearance={{
                     elements: {
@@ -121,6 +124,9 @@ const Header = () => {
                   </SignedOut>
                   <SignedIn>
                     <div className="flex items-center space-x-2">
+                      <span className="text-md font-medium text-black">
+                        {"[profile] ->"}
+                      </span>
                       <UserButton
                         appearance={{
                           elements: {

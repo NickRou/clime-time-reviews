@@ -1,11 +1,11 @@
 "use server";
 
-interface ClerkUser {
-  id: string;
-  username: string;
-}
+import { ClerkUser } from "@/lib/types";
+import { auth } from "@clerk/nextjs/server";
 
 export async function getClerkUsers(): Promise<ClerkUser[]> {
+  const { userId } = await auth();
+
   const response = await fetch("https://api.clerk.com/v1/users", {
     headers: {
       Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
@@ -18,8 +18,10 @@ export async function getClerkUsers(): Promise<ClerkUser[]> {
   }
 
   const data = await response.json();
-  return data.map((user: ClerkUser) => ({
-    id: user.id,
-    username: user.username,
-  }));
+  return data
+    .filter((user: ClerkUser) => user.id !== userId)
+    .map((user: ClerkUser) => ({
+      id: user.id,
+      username: user.username,
+    }));
 }
