@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { UserReview } from "@/lib/types";
 
+type QueryParam = string | number | string[];
+
 export async function getCurrentUserReviews(): Promise<{
   reviews: UserReview[];
   error: string | null;
@@ -25,7 +27,10 @@ export async function getCurrentUserReviews(): Promise<{
   }
 }
 
-export async function getReviews(): Promise<{
+export async function getReviews(filters: { 
+  rating: string;
+  tags: string[];
+}): Promise<{
   reviews: UserReview[];
   error: string | null;
 }> {
@@ -33,13 +38,32 @@ export async function getReviews(): Promise<{
   if (!userId) return { reviews: [], error: null };
 
   try {
-    const { rows } = await sql<UserReview>`
+    let query = `
       SELECT * FROM reviews
       WHERE user_id IN (
-        SELECT following_id FROM friends WHERE follower_id = ${userId}
+        SELECT following_id FROM friends WHERE follower_id = $1
       )
-      ORDER BY date DESC
-      `;
+    `;
+    const params: QueryParam[] = [userId];
+    let paramCount = 1;
+
+    // Add rating filter
+    if (filters?.rating && filters.rating !== "any") {
+      paramCount++;
+      query += ` AND rating >= $${paramCount}`;
+      params.push(parseInt(filters.rating));
+    }
+
+    // Add tags filter
+    if (filters?.tags && filters.tags.length > 0) {
+      paramCount++;
+      query += ` AND tags && $${paramCount}`;
+      params.push(filters.tags);
+    }
+
+    query += ` ORDER BY date DESC`;
+
+    const { rows } = await sql.query<UserReview>(query, params);
     return { reviews: rows, error: null };
   } catch (error) {
     console.error("Failed to fetch reviews: ", error);
@@ -137,5 +161,22 @@ export async function deleteReview(reviewId: string) {
     return { success: true };
   } catch {
     return { success: false, error: "Failed to delete review" };
+  }
+}
+
+export async function getUniqueTags(): Promise<string[]> {
+  const { userId } = await auth();
+  if (!userId) return [];
+
+  try {
+    const { rows } = await sql`
+      SELECT DISTINCT UNNEST(tags) as tag
+      FROM reviews
+      ORDER BY tag;
+    `;
+    return rows.map(row => row.tag);
+  } catch (error) {
+    console.error("Failed to fetch tags: ", error);
+    return [];
   }
 }
