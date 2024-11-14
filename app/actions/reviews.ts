@@ -107,7 +107,6 @@ export async function submitReview(
   const review = formData.get("review") as string;
   const whatToOrder = formData.get("whatToOrder") as string;
   const tags = JSON.parse(formData.get("tags") as string);
-  console.log(tags);
   const timestamp = new Date().toISOString();
 
   try {

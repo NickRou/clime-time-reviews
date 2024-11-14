@@ -34,9 +34,20 @@ export default function FriendListWithPopup() {
   const fetchFriendData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const following = await getFriendFollowRelationships("following");
-      const followers = await getFriendFollowRelationships("followers");
+      let following = await getFriendFollowRelationships("following");
+      let followers = await getFriendFollowRelationships("followers");
       let allUsers = await getClerkUsers();
+
+      // Add image_url to following/followers by matching with allUsers
+      following = following.map(followedUser => ({
+        ...followedUser,
+        image_url: allUsers.find(user => user.id === followedUser.id)?.image_url || followedUser.image_url
+      }));
+
+      followers = followers.map(follower => ({
+        ...follower, 
+        image_url: allUsers.find(user => user.id === follower.id)?.image_url || follower.image_url
+      }));
 
       // Filter out users in `allUsers` who are in the `following` list
       allUsers = allUsers.filter(
@@ -164,6 +175,11 @@ export default function FriendListWithPopup() {
                         className="flex items-center justify-between space-x-4"
                       >
                         <div className="flex items-center space-x-4">
+                          <img
+                            src={user.image_url}
+                            alt={`${user.username}'s avatar`}
+                            className="h-8 w-8 rounded-full"
+                          />
                           <div>
                             <p className="font-semibold">@{user.username}</p>
                           </div>
@@ -199,6 +215,11 @@ export default function FriendListWithPopup() {
                   className="flex items-center justify-between space-x-4"
                 >
                   <div className="flex items-center space-x-4">
+                    <img
+                      src={friend.image_url}
+                      alt={`${friend.username}'s avatar`}
+                      className="h-8 w-8 rounded-full"
+                    />
                     <div>
                       <p className="font-semibold">@{friend.username}</p>
                     </div>

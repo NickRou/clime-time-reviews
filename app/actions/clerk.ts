@@ -23,5 +23,6 @@ export async function getClerkUsers(): Promise<ClerkUser[]> {
     .map((user: ClerkUser) => ({
       id: user.id,
       username: user.username,
+      image_url: user.image_url,
     }));
 }

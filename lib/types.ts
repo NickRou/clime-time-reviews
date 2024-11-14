@@ -3,6 +3,7 @@ import { QueryResultRow } from "@vercel/postgres";
 export type ClerkUser = {
   id: string;
   username: string;
+  image_url: string;
 };
 
 export interface UserReview extends QueryResultRow {
