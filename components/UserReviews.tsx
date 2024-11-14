@@ -21,19 +21,23 @@ const UserReviews = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [filters, setFilters] = useState({
+  const [activeFilters, setActiveFilters] = useState({
+    rating: "any",
+    tags: [] as string[],
+  });
+  const [tempFilters, setTempFilters] = useState({
     rating: "any",
     tags: [] as string[],
   });
   const [availableTags, setAvailableTags] = useState<string[]>([]);
 
-  const fetchReviews = useCallback(async (filterParams = filters) => {
+  const fetchReviews = useCallback(async (filterParams = activeFilters) => {
     setLoading(true);
     const result = await getReviews(filterParams);
     setReviews(result.reviews);
     setError(result.error);
     setLoading(false);
-  }, [filters]);
+  }, [activeFilters]);
 
   useEffect(() => {
     fetchReviews().catch(console.error);
@@ -49,7 +53,15 @@ const UserReviews = () => {
 
   const handleApplyFilters = () => {
     setIsFilterOpen(false);
-    fetchReviews(filters);
+    setActiveFilters(tempFilters);
+    fetchReviews(tempFilters);
+  };
+
+  const handleDialogOpen = (open: boolean) => {
+    setIsFilterOpen(open);
+    if (open) {
+      setTempFilters(activeFilters);
+    }
   };
 
   if (loading) {
@@ -84,7 +96,7 @@ const UserReviews = () => {
           </p>
         </SignedOut>
         <div className="flex justify-start mb-6">
-          <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+          <Dialog open={isFilterOpen} onOpenChange={handleDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="outline">
                 <FilterIcon className="mr-2 h-4 w-4" />
@@ -105,8 +117,8 @@ const UserReviews = () => {
                         id="any"
                         name="rating"
                         value="any"
-                        checked={filters.rating === "any"}
-                        onChange={(e) => setFilters({ ...filters, rating: e.target.value })}
+                        checked={tempFilters.rating === "any"}
+                        onChange={(e) => setTempFilters({ ...tempFilters, rating: e.target.value })}
                         className="h-4 w-4"
                       />
                       <label htmlFor="any">Any Rating</label>
@@ -118,8 +130,8 @@ const UserReviews = () => {
                           id={`rating${rating}`}
                           name="rating"
                           value={rating}
-                          checked={filters.rating === rating.toString()}
-                          onChange={(e) => setFilters({ ...filters, rating: e.target.value })}
+                          checked={tempFilters.rating === rating.toString()}
+                          onChange={(e) => setTempFilters({ ...tempFilters, rating: e.target.value })}
                           className="h-4 w-4"
                         />
                         <label htmlFor={`rating${rating}`} className="flex items-center space-x-1">
@@ -145,27 +157,27 @@ const UserReviews = () => {
                             id={`tag-${tag}`}
                             name="tags"
                             value={tag}
-                            checked={filters.tags.includes(tag)}
+                            checked={tempFilters.tags.includes(tag)}
                             onChange={(e) => {
                               if (e.target.checked) {
-                                if (filters.tags.includes(tag)) {
-                                  setFilters({
-                                    ...filters,
+                                if (tempFilters.tags.includes(tag)) {
+                                  setTempFilters({
+                                    ...tempFilters,
                                     tags: [],
                                   });
                                 } else {
-                                  setFilters({
-                                    ...filters,
+                                  setTempFilters({
+                                    ...tempFilters,
                                     tags: [e.target.value],
                                   });
                                 }
                               }
                             }}
                             onClick={(e) => {
-                              if (filters.tags.includes(tag)) {
+                              if (tempFilters.tags.includes(tag)) {
                                 e.preventDefault();
-                                setFilters({
-                                  ...filters,
+                                setTempFilters({
+                                  ...tempFilters,
                                   tags: [],
                                 });
                               }
