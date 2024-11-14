@@ -31,13 +31,16 @@ const UserReviews = () => {
   });
   const [availableTags, setAvailableTags] = useState<string[]>([]);
 
-  const fetchReviews = useCallback(async (filterParams = activeFilters) => {
-    setLoading(true);
-    const result = await getReviews(filterParams);
-    setReviews(result.reviews);
-    setError(result.error);
-    setLoading(false);
-  }, [activeFilters]);
+  const fetchReviews = useCallback(
+    async (filterParams = activeFilters) => {
+      setLoading(true);
+      const result = await getReviews(filterParams);
+      setReviews(result.reviews);
+      setError(result.error);
+      setLoading(false);
+    },
+    [activeFilters]
+  );
 
   useEffect(() => {
     fetchReviews().catch(console.error);
@@ -95,111 +98,119 @@ const UserReviews = () => {
             Log in to see reviews from your friends.
           </p>
         </SignedOut>
-        <div className="flex justify-start mb-6">
-          <Dialog open={isFilterOpen} onOpenChange={handleDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline">
-                <FilterIcon className="mr-2 h-4 w-4" />
-                Filters
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-xs p-4">
-              <DialogHeader className="pb-2">
-                <DialogTitle>Filters</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-medium mb-2">Rating</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="radio"
-                        id="any"
-                        name="rating"
-                        value="any"
-                        checked={tempFilters.rating === "any"}
-                        onChange={(e) => setTempFilters({ ...tempFilters, rating: e.target.value })}
-                        className="h-4 w-4"
-                      />
-                      <label htmlFor="any">Any Rating</label>
-                    </div>
-                    {[5, 4, 3, 2, 1].map((rating) => (
-                      <div key={rating} className="flex items-center space-x-2">
+        <SignedIn>
+          <div className="flex justify-start mb-6">
+            <Dialog open={isFilterOpen} onOpenChange={handleDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline">
+                  <FilterIcon className="mr-2 h-4 w-4" />
+                  Filters
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-xs p-4">
+                <DialogHeader className="pb-2">
+                  <DialogTitle>Filters</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-medium mb-2">Rating</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
                         <input
                           type="radio"
-                          id={`rating${rating}`}
+                          id="any"
                           name="rating"
-                          value={rating}
-                          checked={tempFilters.rating === rating.toString()}
-                          onChange={(e) => setTempFilters({ ...tempFilters, rating: e.target.value })}
+                          value="any"
+                          checked={tempFilters.rating === "any"}
+                          onChange={(e) =>
+                            setTempFilters({
+                              ...tempFilters,
+                              rating: e.target.value,
+                            })
+                          }
                           className="h-4 w-4"
                         />
-                        <label htmlFor={`rating${rating}`} className="flex items-center space-x-1">
-                          <span>{rating}+</span>
-                          <div className="flex">
-                            {[...Array(rating)].map((_, i) => (
-                              <StarIcon key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                            ))}
-                          </div>
-                        </label>
+                        <label htmlFor="any">Any Rating</label>
                       </div>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <h3 className="font-medium mb-2">Tags</h3>
-                  <div className="max-h-40 overflow-y-auto">
-                    <div className="space-y-2">
-                      {availableTags.map((tag) => (
-                        <div key={tag} className="flex items-center space-x-2">
+                      {[5, 4, 3, 2, 1].map((rating) => (
+                        <div
+                          key={rating}
+                          className="flex items-center space-x-2"
+                        >
                           <input
                             type="radio"
-                            id={`tag-${tag}`}
-                            name="tags"
-                            value={tag}
-                            checked={tempFilters.tags.includes(tag)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                if (tempFilters.tags.includes(tag)) {
-                                  setTempFilters({
-                                    ...tempFilters,
-                                    tags: [],
-                                  });
-                                } else {
-                                  setTempFilters({
-                                    ...tempFilters,
-                                    tags: [e.target.value],
-                                  });
-                                }
-                              }
-                            }}
-                            onClick={(e) => {
-                              if (tempFilters.tags.includes(tag)) {
-                                e.preventDefault();
-                                setTempFilters({
-                                  ...tempFilters,
-                                  tags: [],
-                                });
-                              }
-                            }}
+                            id={`rating${rating}`}
+                            name="rating"
+                            value={rating}
+                            checked={tempFilters.rating === rating.toString()}
+                            onChange={(e) =>
+                              setTempFilters({
+                                ...tempFilters,
+                                rating: e.target.value,
+                              })
+                            }
                             className="h-4 w-4"
                           />
-                          <label htmlFor={`tag-${tag}`} className="text-sm">
-                            {tag}
+                          <label
+                            htmlFor={`rating${rating}`}
+                            className="flex items-center space-x-1"
+                          >
+                            <span>{rating}+</span>
+                            <div className="flex">
+                              {[...Array(rating)].map((_, i) => (
+                                <StarIcon
+                                  key={i}
+                                  className="h-4 w-4 fill-yellow-400 text-yellow-400"
+                                />
+                              ))}
+                            </div>
                           </label>
                         </div>
                       ))}
                     </div>
                   </div>
+                  <div>
+                    <h3 className="font-medium mb-2">Tags</h3>
+                    <div className="max-h-40 overflow-y-auto">
+                      <div className="flex flex-wrap gap-2">
+                        {availableTags.map((tag) => (
+                          <button
+                            key={tag}
+                            onClick={() => {
+                              if (tempFilters.tags.includes(tag)) {
+                                setTempFilters({
+                                  ...tempFilters,
+                                  tags: tempFilters.tags.filter(
+                                    (t) => t !== tag
+                                  ),
+                                });
+                              } else {
+                                setTempFilters({
+                                  ...tempFilters,
+                                  tags: [...tempFilters.tags, tag],
+                                });
+                              }
+                            }}
+                            className={`px-3 py-1 rounded-md text-sm transition-colors
+                                ${
+                                  tempFilters.tags.includes(tag)
+                                    ? "bg-primary text-primary-foreground"
+                                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                                }`}
+                          >
+                            {tag}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <DialogFooter className="pt-4">
-                <Button onClick={handleApplyFilters}>Apply Filters</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
-        <SignedIn>
+                <DialogFooter className="pt-4">
+                  <Button onClick={handleApplyFilters}>Apply Filters</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
           <div className="space-y-6 overflow-y-auto max-h-full">
             {reviews.length === 0 ? (
               <p className="text-center mb-12 text-black">

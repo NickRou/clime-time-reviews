@@ -27,7 +27,7 @@ export async function getCurrentUserReviews(): Promise<{
   }
 }
 
-export async function getReviews(filters: { 
+export async function getReviews(filters: {
   rating: string;
   tags: string[];
 }): Promise<{
@@ -64,7 +64,37 @@ export async function getReviews(filters: {
     query += ` ORDER BY date DESC`;
 
     const { rows } = await sql.query<UserReview>(query, params);
-    return { reviews: rows, error: null };
+
+    // Fetch user data from Clerk for each review
+    const reviewsWithImages = await Promise.all(
+      rows.map(async (review) => {
+        try {
+          const response = await fetch(
+            `https://api.clerk.com/v1/users/${review.user_id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
+              },
+            }
+          );
+          const clerkUser = await response.json();
+          return {
+            ...review,
+            user_image_url: clerkUser.image_url,
+          };
+        } catch (error) {
+          console.error(
+            `Failed to fetch Clerk user for ID ${review.user_id}:`,
+            error
+          );
+          return {
+            ...review,
+          };
+        }
+      })
+    );
+
+    return { reviews: reviewsWithImages, error: null };
   } catch (error) {
     console.error("Failed to fetch reviews: ", error);
     return { reviews: [], error: "Failed to load reviews. Please try again." };
@@ -173,7 +203,7 @@ export async function getUniqueTags(): Promise<string[]> {
       FROM reviews
       ORDER BY tag;
     `;
-    return rows.map(row => row.tag);
+    return rows.map((row) => row.tag);
   } catch (error) {
     console.error("Failed to fetch tags: ", error);
     return [];

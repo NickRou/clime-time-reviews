@@ -18,6 +18,7 @@ export interface UserReview extends QueryResultRow {
   review: string;
   tags: string[];
   what_to_order: string;
+  user_image_url?: string;
 }
 
 export interface Friend extends QueryResultRow {
