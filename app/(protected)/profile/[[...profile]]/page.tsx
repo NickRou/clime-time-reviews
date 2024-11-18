@@ -9,8 +9,8 @@ export default function ProfilePage() {
     return <div>Loading...</div>;
   }
   return (
-    <div className="container max-w-4xl mx-auto px-4 py-12">
-      <h1 className="sm:text-4xl md:text-4xl lg:text-4xl xl:text-4xl  font-bold text-center mb-12 text-black">
+    <div className="container max-w-4xl mx-auto md:px-0 sm:px-0 lg:px-4 xl:px-4 py-8">
+      <h1 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12 text-black">
         --- Profile ---
       </h1>
       <UserProfile />
