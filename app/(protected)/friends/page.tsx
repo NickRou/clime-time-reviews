@@ -1,4 +1,4 @@
-import FriendListWithPopup from "@/components/FriendsListWithPopup";
+import FriendListWithPopup from "./_components/FriendsListWithPopup";
 
 export default function FriendsPage() {
   return (

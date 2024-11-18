@@ -13,13 +13,13 @@ import {
 } from "@/components/ui/dialog";
 import { X, UserPlus } from "lucide-react";
 import { ClerkUser } from "@/lib/types";
-import { getClerkUsers } from "@/app/actions/clerk";
 import {
   addFriend,
   deleteFriend,
   getFriendFollowRelationships,
-} from "@/app/actions/friends";
+} from "@/app/(protected)/_actions/friends";
 import Image from "next/image";
+import { getClerkUsers } from "../../_actions/clerk";
 
 export default function FriendListWithPopup() {
   const [isFollowing, setIsFollowing] = useState(true);

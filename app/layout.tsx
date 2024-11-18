@@ -1,11 +1,7 @@
-"use client";
-
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
-import * as React from "react";
 import { Inconsolata } from "next/font/google";
 import "leaflet/dist/leaflet.css";
-import Header from "@/components/Header";
 
 const inconsolata = Inconsolata({
   subsets: ["latin"],
@@ -18,12 +14,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider dynamic>
       <html lang="en" className={inconsolata.className}>
-        <body>
-          <Header />
-          <main>{children}</main>
-        </body>
+        <body>{children}</body>
       </html>
     </ClerkProvider>
   );

@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { submitReview } from "@/app/actions/reviews";
+import { submitReview } from "@/app/(protected)/_actions/reviews";
 
 const formSchema = z.object({
   rating: z.number().min(1).max(5),
