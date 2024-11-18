@@ -1,4 +1,5 @@
-import Header from "./_components/Header";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "./_components/app-sidebar";
 
 export default function ProtectedLayout({
   children,
@@ -6,9 +7,12 @@ export default function ProtectedLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <Header />
-      <main className="container mx-auto px-4 py-12">{children}</main>
-    </>
+    <SidebarProvider>
+      <AppSidebar />
+      <main>
+        <SidebarTrigger />
+        {/* {children} */}
+      </main>
+    </SidebarProvider>
   );
 }

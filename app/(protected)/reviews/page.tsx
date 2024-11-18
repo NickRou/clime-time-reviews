@@ -30,8 +30,8 @@ export default function Page() {
 
   const fetchReviews = useCallback(
     async (filterParams = activeFilters) => {
-      const result = await getReviews(filterParams);
-      setReviews(result.reviews);
+      // const result = await getReviews(filterParams);
+      setReviews([]);
     },
     [activeFilters]
   );
