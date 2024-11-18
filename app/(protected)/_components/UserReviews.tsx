@@ -1,9 +1,8 @@
 "use client";
 
-import { getReviews, getUniqueTags } from "@/app/actions/reviews";
+import { getReviews, getUniqueTags } from "@/app/(protected)/_actions/reviews";
 import { UserReview } from "@/lib/types";
 import { useEffect, useState, useCallback } from "react";
-import ReviewCard from "./ReviewCard";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import {
   Dialog,
@@ -15,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { FilterIcon, StarIcon } from "lucide-react";
+import ReviewCard from "./ReviewCard";
 
 const UserReviews = () => {
   const [reviews, setReviews] = useState<UserReview[]>([]);
@@ -88,7 +88,7 @@ const UserReviews = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="sm:text-4xl md:text-4xl lg:text-4xl xl:text-4xl font-bold text-center mb-12 text-black ">
           --- Reviews From Your Friends ---

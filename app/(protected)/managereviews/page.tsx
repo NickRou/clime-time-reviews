@@ -1,9 +1,9 @@
 "use client";
 
-import { getCurrentUserReviews } from "@/app/actions/reviews";
+import { getCurrentUserReviews } from "@/app/(protected)/_actions/reviews";
 import { UserReview } from "@/lib/types";
 import { useEffect, useState } from "react";
-import ManageReviewCard from "@/components/ManageReviewCard";
+import ManageReviewCard from "../_components/ManageReviewCard";
 
 const ManageReviewsPage = () => {
   const [reviews, setReviews] = useState<UserReview[]>([]);
@@ -41,7 +41,7 @@ const ManageReviewsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Container with max width and center alignment */}
       <div className="max-w-4xl mx-auto px-4 py-12">
         {/* Header */}

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignOutButton } from "@clerk/nextjs";
 import { Menu } from "lucide-react";
 import {
   Sheet,
@@ -16,7 +16,7 @@ const Header = () => {
       <div className="flex items-center justify-between h-full p-2">
         {/* Logo - always visible */}
         <Link
-          href="/"
+          href="/reviews"
           className="inline-block px-4 py-2 text-xl font-bold text-black hover:shadow-lg"
           aria-label="Clime Time Reviews"
         >
@@ -28,11 +28,11 @@ const Header = () => {
           {/* Navigation links */}
           <div className="flex items-center space-x-2">
             <Link
-              href="/"
+              href="/reviews"
               className="inline-block px-4 py-2 text-md font-medium text-black hover:shadow-lg"
-              aria-label="Home"
+              aria-label="Reviews"
             >
-              Home
+              [reviews]
             </Link>
             <SignedIn>
               <Link
@@ -40,49 +40,39 @@ const Header = () => {
                 className="inline-block px-4 py-2 text-md font-medium text-black hover:shadow-lg"
                 aria-label="Friends"
               >
-                Friends
+                [friends]
               </Link>
               <Link
                 href="/writeareview"
                 className="inline-block px-4 py-2 text-md font-medium text-black hover:shadow-lg"
                 aria-label="Write a Review"
               >
-                Write a Review
+                [write a review]
               </Link>
               <Link
                 href="/managereviews"
                 className="inline-block px-4 py-2 text-md font-medium text-black hover:shadow-lg"
                 aria-label="Manage Reviews"
               >
-                Manage Reviews
+                [manage your reviews]
               </Link>
             </SignedIn>
           </div>
 
           {/* Desktop Auth components */}
-          <div className="flex items-center space-x-4">
-            <SignedOut>
-              <SignInButton>
-                <Button variant="outline" className="rounded-full">
-                  Login
-                </Button>
-              </SignInButton>
-            </SignedOut>
-            <SignedIn>
-              <div className="flex items-center space-x-4 cursor-pointer">
-                <span className="text-md font-medium text-black">
-                  {"[profile] ->"}
-                </span>
-                <UserButton
-                  appearance={{
-                    elements: {
-                      avatarBox: "w-10 h-10",
-                      userButtonTrigger: "flex items-center gap-2",
-                    },
-                  }}
-                ></UserButton>
+          <div className="flex items-center">
+            <div className="flex items-center space-x-2">
+              <Link
+                href="/profile"
+                className="inline-block px-4 py-2 text-md font-medium text-black hover:shadow-lg"
+                aria-label="Profile"
+              >
+                [profile]
+              </Link>
+              <div className="inline-block px-4 py-2 text-md font-medium text-black hover:shadow-lg">
+                <SignOutButton>[sign out]</SignOutButton>
               </div>
-            </SignedIn>
+            </div>
           </div>
         </div>
 
@@ -103,57 +93,52 @@ const Header = () => {
                 {/* Mobile Navigation Links */}
                 <nav className="flex flex-col space-y-4">
                   <Link
-                    href="/"
+                    href="/reviews"
                     className="text-md font-medium text-black hover:text-gray-700"
                   >
-                    Home
+                    [reviews]
                   </Link>
                   <SignedIn>
                     <Link
                       href="/friends"
                       className="text-md font-medium text-black hover:text-gray-700"
                     >
-                      Friends
+                      [friends]
                     </Link>
                     <Link
                       href="/writeareview"
                       className="text-md font-medium text-black hover:text-gray-700"
                     >
-                      Write a Review
+                      [write a review]
                     </Link>
                     <Link
                       href="/managereviews"
                       className="text-md font-medium text-black hover:text-gray-700"
                     >
-                      Manage Reviews
+                      [manage your reviews]
                     </Link>
                   </SignedIn>
                 </nav>
 
                 {/* Mobile Auth Components */}
-                <div className="pt-4 border-t">
-                  <SignedOut>
-                    <SignInButton>
-                      <Button className="w-full rounded-full" variant="outline">
-                        Login
-                      </Button>
-                    </SignInButton>
-                  </SignedOut>
-                  <SignedIn>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-md font-medium text-black">
-                        {"[profile] ->"}
-                      </span>
-                      <UserButton
-                        appearance={{
-                          elements: {
-                            avatarBox: "w-8 h-8",
-                            userButtonTrigger: "flex items-center gap-2",
-                          },
-                        }}
-                      />
+                <div className="flex flex-col space-y-4 mt-4 border-t pt-4">
+                  {/* Mobile Navigation Links */}
+                  <nav className="flex flex-col space-y-4">
+                    {/* Profile line */}
+                    <div className="flex flex-col space-y-4">
+                      <Link
+                        href="/profile"
+                        className="text-md font-medium text-black hover:text-gray-70"
+                        aria-label="Profile"
+                      >
+                        [profile]
+                      </Link>
                     </div>
-                  </SignedIn>
+                    {/* Sign Out button on new line */}
+                    <div className="text-md font-medium text-black hover:text-gray-70">
+                      <SignOutButton>[sign out]</SignOutButton>
+                    </div>
+                  </nav>
                 </div>
               </div>
             </SheetContent>

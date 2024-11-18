@@ -4,7 +4,7 @@ import { UserReview } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { useTransition } from "react";
-import { deleteReview } from "@/app/actions/reviews";
+import { deleteReview } from "@/app/(protected)/_actions/reviews";
 
 export default function ReviewCard({ review }: { review: UserReview }) {
   const [isPending, startTransition] = useTransition();
