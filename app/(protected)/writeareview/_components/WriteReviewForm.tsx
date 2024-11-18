@@ -103,7 +103,7 @@ export default function WriteReviewForm() {
         title: "Success",
         description: result.message,
       });
-      router.push("/");
+      router.push("/managereviews");
     } else {
       toast({
         title: "Error",

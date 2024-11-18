@@ -1,10 +1,27 @@
+import { Button } from "@/components/ui/button";
 import { UserReview } from "@/lib/types";
-import { StarIcon } from "lucide-react";
+import { StarIcon, Trash2 } from "lucide-react";
 import Image from "next/image";
+import { deleteReview } from "../_actions/reviews";
 
-const ReviewCard = ({ review }: { review: UserReview }) => {
+const ReviewCard = ({
+  review,
+  editVersion,
+  onDelete,
+}: {
+  review: UserReview;
+  editVersion?: boolean;
+  onDelete: (deletedReviewId: string) => void;
+}) => {
+  const handleDelete = async () => {
+    const result = await deleteReview(review.review_id);
+    if (result?.success) {
+      onDelete(review.review_id);
+    }
+  };
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200 relative">
       <div className="flex items-center space-x-2 mb-4">
         <div className="w-8 h-8 relative overflow-hidden rounded-full">
           <Image
@@ -65,6 +82,28 @@ const ReviewCard = ({ review }: { review: UserReview }) => {
               </span>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Edit and Delete Buttons */}
+      {editVersion && (
+        <div className="absolute bottom-4 right-4 flex space-x-2">
+          {/* <Button
+            variant="outline"
+            size="icon"
+            onClick={() => onEdit(review.review_id)}
+            aria-label="Edit review"
+          >
+            <Edit className="h-4 w-4" />
+          </Button> */}
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleDelete}
+            aria-label="Delete review"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
         </div>
       )}
     </div>

@@ -3,12 +3,18 @@
 import { getCurrentUserReviews } from "@/app/(protected)/_actions/reviews";
 import { UserReview } from "@/lib/types";
 import { useEffect, useState } from "react";
-import ManageReviewCard from "../_components/ManageReviewCard";
+import ReviewCard from "../_components/ReviewCard";
 
 const ManageReviewsPage = () => {
   const [reviews, setReviews] = useState<UserReview[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const handleReviewDeleted = (deletedReviewId: string) => {
+    setReviews((prevReviews) =>
+      prevReviews.filter((review) => review.review_id !== deletedReviewId)
+    );
+  };
 
   useEffect(() => {
     async function fetchReviews() {
@@ -42,13 +48,10 @@ const ManageReviewsPage = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Container with max width and center alignment */}
       <div className="max-w-4xl mx-auto px-4 py-12">
-        {/* Header */}
         <h1 className="sm:text-4xl md:text-4xl lg:text-4xl xl:text-4xl font-bold text-center mb-12 text-black ">
           --- Your Reviews ---
         </h1>
-        {/* Reviews Grid */}
         <div className="space-y-6 overflow-y-auto max-h-full">
           {reviews.length === 0 ? (
             <p className="text-center mb-12 text-black">
@@ -56,7 +59,12 @@ const ManageReviewsPage = () => {
             </p>
           ) : (
             reviews.map((review) => (
-              <ManageReviewCard key={review.review_id} review={review} />
+              <ReviewCard
+                key={review.review_id}
+                review={review}
+                editVersion={true}
+                onDelete={handleReviewDeleted}
+              />
             ))
           )}
         </div>
