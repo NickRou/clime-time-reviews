@@ -20,7 +20,37 @@ export async function getCurrentUserReviews(): Promise<{
       WHERE user_id = ${userId} 
       ORDER BY date DESC
       `;
-    return { reviews: rows, error: null };
+
+    // Fetch user data from Clerk for each review
+    const reviewsWithImages = await Promise.all(
+      rows.map(async (review) => {
+        try {
+          const response = await fetch(
+            `https://api.clerk.com/v1/users/${review.user_id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
+              },
+            }
+          );
+          const clerkUser = await response.json();
+          return {
+            ...review,
+            user_image_url: clerkUser.image_url,
+          };
+        } catch (error) {
+          console.error(
+            `Failed to fetch Clerk user for ID ${review.user_id}:`,
+            error
+          );
+          return {
+            ...review,
+          };
+        }
+      })
+    );
+
+    return { reviews: reviewsWithImages, error: null };
   } catch (error) {
     console.error("Failed to fetch reviews: ", error);
     return { reviews: [], error: "Failed to load reviews. Please try again." };
@@ -168,6 +198,7 @@ export async function submitReview(
       )
     `;
     revalidatePath("/writeareview");
+    revalidatePath("/managereviews");
     return { message: "Review submitted successfully!", success: true };
   } catch (error) {
     // catch errors during database operation
