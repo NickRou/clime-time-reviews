@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs'
 import BackgroundCanvas from '@/components/BackgroundCanvas'
 import Footer from '@/components/Footer'
+
 export default function LandingPage() {
   return (
     <div className="relative h-screen w-full overflow-hidden">

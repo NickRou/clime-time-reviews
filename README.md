@@ -16,3 +16,9 @@ Clime Time Reviews - A Next.js app for seeing reviews from your friends.
 - [x] Add a footer
 - [ ] Setup Neon DB connection
 - [ ] Add a dark mode
+
+## TODO PROD
+
+- [ ] setup prod instance of clerk auth
+- [ ] setup custom domain on vercel
+- [ ] setup prod instance of Neon DB

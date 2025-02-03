@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Lato } from 'next/font/google'
 import './globals.css'
 import { ClerkProvider } from '@clerk/nextjs'
+import { ThemeProvider } from '@/components/ThemeProvider'
 
 const lato = Lato({
   weight: ['300', '400', '700'], // 300: secondary, 400: body, 700: heading
@@ -22,8 +23,16 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" className={lato.className}>
-        <body>{children}</body>
+      <html lang="en" className={lato.className} suppressHydrationWarning>
+        <body>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </body>
       </html>
     </ClerkProvider>
   )
