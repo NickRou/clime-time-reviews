@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Lato } from 'next/font/google'
 import './globals.css'
+import { ClerkProvider } from '@clerk/nextjs'
 
 const lato = Lato({
   weight: ['300', '400', '700'], // 300: secondary, 400: body, 700: heading
@@ -20,8 +21,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={lato.className}>
-      <body>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" className={lato.className}>
+        <body>{children}</body>
+      </html>
+    </ClerkProvider>
   )
 }
