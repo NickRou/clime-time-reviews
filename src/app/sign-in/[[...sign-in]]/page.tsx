@@ -1,6 +1,7 @@
 import BackgroundCanvas from '@/components/BackgroundCanvas'
 import { SignIn } from '@clerk/nextjs'
 import Footer from '@/components/Footer'
+import { dark } from '@clerk/themes'
 
 export default function Page() {
   return (
@@ -8,7 +9,7 @@ export default function Page() {
       <BackgroundCanvas />
       <div className="relative z-10 flex h-full flex-col items-center px-4">
         <div className="flex flex-1 flex-col items-center justify-center">
-          <SignIn />
+          <SignIn appearance={{ baseTheme: dark }} />
         </div>
         <Footer />
       </div>

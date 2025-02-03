@@ -1,12 +1,12 @@
-import { ThemeToggle } from '@/components/ThemeToggle'
-import { UserButton } from '@clerk/nextjs'
-
 export default function HomePage() {
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1>Home page</h1>
-      <UserButton />
-      <ThemeToggle />
+    <div className="flex flex-1 flex-col gap-4 p-4">
+      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+        <div className="aspect-video rounded-xl bg-muted/50" />
+        <div className="aspect-video rounded-xl bg-muted/50" />
+        <div className="aspect-video rounded-xl bg-muted/50" />
+      </div>
+      <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
     </div>
   )
 }

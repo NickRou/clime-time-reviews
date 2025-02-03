@@ -13,9 +13,12 @@ Clime Time Reviews - A Next.js app for seeing reviews from your friends.
 - [x] setup Clerk auth
 - [x] create a landing page and a basic home page
 - [x] create login / signup pages
-- [x] Add a footer
-- [ ] Setup Neon DB connection
-- [ ] Add a dark mode
+- [x] add a footer
+- [ ] setup Neon DB connection
+- [x] add a dark mode
+- [x] setup basic sidebar and header
+- [x] have clerk components follow the nextjs theme
+- [x] setup a user profile page (link manage account to this profile page)
 
 ## TODO PROD
 
