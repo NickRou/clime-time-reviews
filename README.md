@@ -20,10 +20,10 @@ Clime Time Reviews - A Next.js app for seeing reviews from your friends.
 - [x] setup a user profile page (link manage account to this profile page)
 - [x] add breadcrumbs to header using url
 - [x] style profile page
+- [x] load user information into profile page
+- [x] add an explore page
 - [ ] setup Neon DB connection
 - [ ] setup databases for posts, user connections, etc...
-- [ ] load user information into profile page
-- [ ] add an explore page
 
 ## TODO PROD
 
