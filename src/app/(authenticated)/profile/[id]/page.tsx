@@ -7,7 +7,7 @@ import { Suspense } from 'react'
 export default async function ProfilePage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
   const { id } = await params
   const user = await getUserByUsername(id)
