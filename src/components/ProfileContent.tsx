@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -10,8 +9,21 @@ import { Separator } from '@/components/ui/separator'
 import { UserPlus, Users } from 'lucide-react'
 import PostCard from '@/components/PostCard'
 import UserCard from '@/components/UserCard'
+import Link from 'next/link'
 
-export default function ProfilePage() {
+interface ProfileContentProps {
+  username: string
+  firstName: string
+  lastName: string
+  imageUrl: string
+}
+
+export default function ProfileContent({
+  username,
+  firstName,
+  lastName,
+  imageUrl,
+}: ProfileContentProps) {
   const [followingUsers, setFollowingUsers] = useState([1, 3, 5])
 
   const toggleFollow = (userId: number) => {
@@ -28,15 +40,14 @@ export default function ProfilePage() {
       <div className="mb-8">
         <div className="flex flex-col sm:flex-row items-center sm:items-end px-4">
           <Avatar className="w-32 h-32 border-4 border-background">
-            <AvatarImage
-              src="/placeholder.svg?height=128&width=128"
-              alt="@username"
-            />
+            <AvatarImage src={imageUrl} alt="@username" />
             <AvatarFallback>JD</AvatarFallback>
           </Avatar>
           <div className="mt-4 sm:mt-0 sm:ml-4 text-center sm:text-left">
-            <h1 className="text-2xl font-bold">John Doe</h1>
-            <p className="text-muted-foreground">@johndoe</p>
+            <h1 className="text-2xl font-bold">
+              {firstName} {lastName}
+            </h1>
+            <p className="text-muted-foreground">@{username}</p>
             <div className="flex mt-2 space-x-4">
               <div className="flex items-center">
                 <UserPlus className="w-4 h-4 mr-1" />
@@ -53,7 +64,9 @@ export default function ProfilePage() {
             </div>
           </div>
           <div className="mt-4 sm:mt-0 sm:ml-auto">
-            <Button>Edit profile</Button>
+            <Link href={`/profile/${username}/manage`}>
+              <Button>Edit profile</Button>
+            </Link>
           </div>
         </div>
       </div>

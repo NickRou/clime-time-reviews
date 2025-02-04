@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Clock, Home, User } from 'lucide-react'
+import { Clock, Home, Search, User } from 'lucide-react'
 
 import {
   Sidebar,
@@ -15,7 +15,10 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  username: username,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { username: string | null }) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -48,7 +51,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <a href="/profile" className="font-medium">
+                <a href="/explore" className="font-medium">
+                  <Search />
+                  Explore
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <a href={`/profile/${username}`} className="font-medium">
                   <User />
                   Profile
                 </a>
@@ -56,7 +67,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarMenuSub>
                 <SidebarMenuSubItem>
                   <SidebarMenuSubButton asChild>
-                    <a href="/profile/manage" className="font-small">
+                    <a
+                      href={`/profile/${username}/manage`}
+                      className="font-small"
+                    >
                       Manage
                     </a>
                   </SidebarMenuSubButton>
