@@ -5,8 +5,9 @@ interface UserCardProps {
   name: string
   username: string
   avatar: string
-  isFollowing: boolean
-  onFollowToggle: () => void
+  showFollowingButton?: boolean
+  isFollowing?: boolean
+  onFollowToggle?: () => void
   onRemove?: () => void
   showRemoveButton?: boolean
 }
@@ -15,6 +16,7 @@ export default function UserCard({
   name,
   username,
   avatar,
+  showFollowingButton = false,
   isFollowing,
   onFollowToggle,
   onRemove,
@@ -38,13 +40,15 @@ export default function UserCard({
             Remove
           </Button>
         )}
-        <Button
-          variant={isFollowing ? 'outline' : 'default'}
-          size="sm"
-          onClick={onFollowToggle}
-        >
-          {isFollowing ? 'Unfollow' : 'Follow'}
-        </Button>
+        {showFollowingButton && (
+          <Button
+            variant={isFollowing ? 'outline' : 'default'}
+            size="sm"
+            onClick={onFollowToggle}
+          >
+            {isFollowing ? 'Unfollow' : 'Follow'}
+          </Button>
+        )}
       </div>
     </div>
   )

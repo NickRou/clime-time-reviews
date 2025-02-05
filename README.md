@@ -26,8 +26,10 @@ Clime Time Reviews - A Next.js app for seeing reviews from your friends.
 - [x] setup Neon DB connection
 - [x] setup Drizzle ORM
 - [x] setup databases for posts, user connections, etc...
-- [ ] add db actions for posts, user connections, etc...
-- [ ] hook up profile page, home page, and explore page to DB queries
+- [x] add db actions for posts, user connections, etc...
+- [x] hook up profile page, home page, and explore page to DB queries
+- [ ] add ability to like posts
+- [ ] add ability to create a post on the home page
 - [ ] setup clerk webhooks to sync data with DB
 - [ ] setup custom Neon DB JWT template
 

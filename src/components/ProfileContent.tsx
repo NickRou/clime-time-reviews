@@ -10,7 +10,13 @@ import { UserPlus, Users } from 'lucide-react'
 import PostCard from '@/components/PostCard'
 import UserCard from '@/components/UserCard'
 import Link from 'next/link'
-import { getPostsByUserId, getFollowing, getFollowers } from '@/lib/actions'
+import {
+  getPostsByUserId,
+  getFollowing,
+  getFollowers,
+  unfollowUser,
+  removeFollower,
+} from '@/lib/actions'
 import { Post, User } from '@/lib/types'
 
 interface ProfileContentProps {
@@ -48,8 +54,24 @@ export default function ProfileContent({
       })
   }, [userId])
 
-  const toggleFollow = (userId: number) => {
-    // Implementation of toggleFollow function
+  const toggleFollow = async (followeeId: string) => {
+    try {
+      await unfollowUser(followeeId)
+      // Remove the unfollowed user from the following list
+      setFollowing(following.filter((user) => user.id !== followeeId))
+    } catch (error) {
+      console.error('Failed to unfollow user:', error)
+    }
+  }
+
+  const removeFollowerHandler = async (followerId: string) => {
+    try {
+      await removeFollower(followerId)
+      // Remove the follower from the local state
+      setFollowers(followers.filter((user) => user.id !== followerId))
+    } catch (error) {
+      console.error('Failed to remove follower:', error)
+    }
   }
 
   return (
@@ -101,7 +123,7 @@ export default function ProfileContent({
           <TabsTrigger value="followers">Followers</TabsTrigger>
         </TabsList>
         <TabsContent value="posts">
-          <div className="grid gap-6 max-w-3xl mx-auto">
+          <div className="grid max-w-3xl mx-auto">
             {userPosts.map((post, index) => (
               <div key={post.post_id}>
                 <PostCard
@@ -114,7 +136,7 @@ export default function ProfileContent({
                   avatar={imageUrl}
                   likes={0}
                 />
-                {index < userPosts.length - 1 && <Separator />}
+                {index < userPosts.length && <Separator />}
               </div>
             ))}
           </div>
@@ -132,10 +154,11 @@ export default function ProfileContent({
                     name={`${user.firstName} ${user.lastName}`}
                     username={user.username || ''}
                     avatar={user.imageUrl}
+                    showFollowingButton={true}
                     isFollowing={true}
-                    onFollowToggle={() => toggleFollow(1)}
+                    onFollowToggle={() => toggleFollow(user.id)}
                   />
-                  {index < following.length - 1 && <Separator />}
+                  {index < following.length && <Separator />}
                 </div>
               ))
             )}
@@ -154,14 +177,11 @@ export default function ProfileContent({
                     name={`${user.firstName} ${user.lastName}`}
                     username={user.username || ''}
                     avatar={user.imageUrl}
-                    isFollowing={following.some((f) => f.id === user.id)}
-                    onFollowToggle={() =>
-                      following.some((f) => f.id === user.id)
-                        ? toggleFollow(1)
-                        : toggleFollow(1)
-                    }
+                    showFollowingButton={false}
+                    showRemoveButton={true}
+                    onRemove={() => removeFollowerHandler(user.id)}
                   />
-                  {index < followers.length - 1 && <Separator />}
+                  {index < followers.length && <Separator />}
                 </div>
               ))
             )}
