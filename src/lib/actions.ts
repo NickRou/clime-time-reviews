@@ -1,6 +1,37 @@
-import { auth, clerkClient } from '@clerk/nextjs/server'
+'use server'
 
-export default async function getUserByUsername(username: string) {
+import { auth, clerkClient } from '@clerk/nextjs/server'
+import { Posts } from '@/db/schema'
+import { db } from '@/db'
+import { eq, and, desc } from 'drizzle-orm'
+import { User } from '@/lib/types'
+import { Follows } from '@/db/schema'
+
+// ---- CLERK USERS ----
+export async function getAllUsers(): Promise<User[] | null> {
+  const { userId } = await auth()
+
+  if (!userId) {
+    return null
+  }
+
+  const client = await clerkClient()
+  const usersResourceResponse = await client.users.getUserList()
+  if (usersResourceResponse.data.length === 0) {
+    return null
+  }
+  const users = usersResourceResponse.data.map((user) => ({
+    id: user.id,
+    username: user.username,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    imageUrl: user.imageUrl,
+  })) as User[]
+
+  return users
+}
+
+export async function getUserByUsername(username: string) {
   const { userId } = await auth()
 
   if (!userId) {
@@ -13,4 +44,114 @@ export default async function getUserByUsername(username: string) {
   })
 
   return users.data[0] || null
+}
+
+// ---- POSTS ----
+export async function createPost(formData: FormData) {
+  const { userId } = await auth()
+  if (!userId) throw new Error('User not found')
+
+  const locName = formData.get('locName') as string
+  const locAddress = formData.get('locAddress') as string
+  const locReview = formData.get('locReview') as string
+  const locContent = formData.get('locContent') as string
+
+  await db.insert(Posts).values({
+    user_id: userId,
+    loc_name: locName,
+    loc_address: locAddress,
+    loc_review: parseInt(locReview),
+    loc_content: locContent,
+  })
+}
+
+export async function deletePost(postId: string) {
+  const { userId } = await auth()
+  if (!userId) throw new Error('User not found')
+
+  await db
+    .delete(Posts)
+    .where(and(eq(Posts.user_id, userId), eq(Posts.post_id, postId)))
+}
+
+export async function getAllPosts() {
+  const posts = await db.query.Posts.findMany({
+    orderBy: (posts, { desc }) => [desc(posts.createTs)],
+  })
+
+  return posts
+}
+
+export async function getPostsByUserId(userId: string) {
+  const posts = await db.query.Posts.findMany({
+    where: eq(Posts.user_id, userId),
+    orderBy: (posts, { desc }) => [desc(posts.createTs)],
+  })
+
+  return posts
+}
+
+// ---- FOLLOWS ----
+export async function getFollowing(userId: string) {
+  // Get all users that userId is following
+  const following = await db.query.Follows.findMany({
+    where: eq(Follows.follower_id, userId),
+  })
+
+  if (following.length === 0) return []
+
+  const users = await getAllUsers()
+  if (!users) return []
+
+  // Filter users list to only include those being followed
+  const followeeIds = following.map((f) => f.followee_id)
+  return users.filter((user) => followeeIds.includes(user.id))
+}
+
+export async function getFollowers(userId: string) {
+  // Get all users that follow userId
+  const followers = await db.query.Follows.findMany({
+    where: eq(Follows.followee_id, userId),
+  })
+
+  if (followers.length === 0) return []
+
+  const users = await getAllUsers()
+  if (!users) return []
+
+  // Filter users list to only include followers
+  const followerIds = followers.map((f) => f.follower_id)
+  return users.filter((user) => followerIds.includes(user.id))
+}
+
+export async function followUser(followeeId: string) {
+  const { userId } = await auth()
+  if (!userId) throw new Error('User not found')
+
+  await db.insert(Follows).values({
+    follower_id: userId,
+    followee_id: followeeId,
+  })
+}
+
+export async function unfollowUser(followeeId: string) {
+  const { userId } = await auth()
+  if (!userId) throw new Error('User not found')
+
+  await db
+    .delete(Follows)
+    .where(
+      and(eq(Follows.follower_id, userId), eq(Follows.followee_id, followeeId))
+    )
+}
+
+export async function removeFollower(followerId: string) {
+  const { userId } = await auth()
+  if (!userId) throw new Error('User not found')
+
+  await db
+    .delete(Follows)
+    .where(
+      and(eq(Follows.follower_id, followerId), eq(Follows.followee_id, userId))
+    )
 }

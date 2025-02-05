@@ -1,6 +1,6 @@
 import ProfileContent from '@/components/ProfileContent'
 import { ProfileSkeleton } from '@/components/ProfileSkeleton'
-import getUserByUsername from '@/lib/actions'
+import { getAllUsers, getUserByUsername } from '@/lib/actions'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
@@ -10,14 +10,19 @@ export default async function ProfilePage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const user = await getUserByUsername(id)
+  const allUsers = await getAllUsers()
+  const user = allUsers?.find((user) => user.username === id)
+
+  console.log(user)
+  console.log(allUsers)
 
   if (
     !user ||
     !user.username ||
     !user.firstName ||
     !user.lastName ||
-    !user.imageUrl
+    !user.imageUrl ||
+    !allUsers
   ) {
     return notFound()
   }
@@ -27,10 +32,12 @@ export default async function ProfilePage({
   return (
     <Suspense fallback={<ProfileSkeleton />}>
       <ProfileContent
+        userId={user.id}
         username={username}
         firstName={firstName}
         lastName={lastName}
         imageUrl={imageUrl}
+        allUsers={allUsers}
       />
     </Suspense>
   )

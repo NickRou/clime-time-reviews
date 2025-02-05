@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -10,8 +10,11 @@ import { UserPlus, Users } from 'lucide-react'
 import PostCard from '@/components/PostCard'
 import UserCard from '@/components/UserCard'
 import Link from 'next/link'
+import { getPostsByUserId, getFollowing, getFollowers } from '@/lib/actions'
+import { Post, User } from '@/lib/types'
 
 interface ProfileContentProps {
+  userId: string
   username: string
   firstName: string
   lastName: string
@@ -19,28 +22,47 @@ interface ProfileContentProps {
 }
 
 export default function ProfileContent({
+  userId,
   username,
   firstName,
   lastName,
   imageUrl,
 }: ProfileContentProps) {
-  const [followingUsers, setFollowingUsers] = useState([1, 3, 5])
+  const [userPosts, setUserPosts] = useState<Post[]>([])
+  const [following, setFollowing] = useState<User[]>([])
+  const [followers, setFollowers] = useState<User[]>([])
+
+  useEffect(() => {
+    Promise.all([
+      getPostsByUserId(userId),
+      getFollowing(userId),
+      getFollowers(userId),
+    ])
+      .then(([posts, followingUsers, followerUsers]) => {
+        setUserPosts(posts)
+        setFollowing(followingUsers)
+        setFollowers(followerUsers)
+      })
+      .catch((error) => {
+        console.error('Failed to fetch data:', error)
+      })
+  }, [userId])
 
   const toggleFollow = (userId: number) => {
-    setFollowingUsers((prev) =>
-      prev.includes(userId)
-        ? prev.filter((id) => id !== userId)
-        : [...prev, userId]
-    )
+    // Implementation of toggleFollow function
   }
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-8 ">
+    <div className="container mx-auto max-w-3xl px-4 py-8">
       {/* Profile Header */}
       <div className="mb-8">
         <div className="flex flex-col sm:flex-row items-center sm:items-end px-4">
           <Avatar className="w-32 h-32 border-4 border-background">
-            <AvatarImage src={imageUrl} alt="@username" />
+            <AvatarImage
+              className="object-cover w-full h-full"
+              src={imageUrl}
+              alt="@username"
+            />
             <AvatarFallback>JD</AvatarFallback>
           </Avatar>
           <div className="mt-4 sm:mt-0 sm:ml-4 text-center sm:text-left">
@@ -52,13 +74,13 @@ export default function ProfileContent({
               <div className="flex items-center">
                 <UserPlus className="w-4 h-4 mr-1" />
                 <span className="text-sm">
-                  <strong>250</strong> Following
+                  <strong>{following.length}</strong> Following
                 </span>
               </div>
               <div className="flex items-center">
                 <Users className="w-4 h-4 mr-1" />
                 <span className="text-sm">
-                  <strong>1.2K</strong> Followers
+                  <strong>{followers.length}</strong> Followers
                 </span>
               </div>
             </div>
@@ -80,70 +102,69 @@ export default function ProfileContent({
         </TabsList>
         <TabsContent value="posts">
           <div className="grid gap-6 max-w-3xl mx-auto">
-            <PostCard
-              name="John Doe"
-              username="johndoe"
-              restaurantName="Downtown Café"
-              address="123 Main St, Anytown, USA"
-              rating={4.5}
-              body="Just had an amazing experience at the new café downtown! The atmosphere was cozy, and the coffee was top-notch. Highly recommend their caramel latte. #CoffeeLovers"
-              avatar="/placeholder.svg?height=40&width=40&text=JD"
-              likes={15}
-            />
-            <Separator />
-            <PostCard
-              name="John Doe"
-              username="johndoe"
-              restaurantName="Bella Italia"
-              address="456 Elm St, Another City, USA"
-              rating={3.5}
-              body="Tried the new Italian restaurant on 5th Avenue. The pasta was good, but the service was a bit slow. Might give it another chance in a few weeks. #FoodieAdventures"
-              avatar="/placeholder.svg?height=40&width=40&text=JD"
-              likes={8}
-            />
-            <Separator />
-            <PostCard
-              name="John Doe"
-              username="johndoe"
-              restaurantName="Bookworm Café"
-              address="789 Oak Rd, Somewhere, USA"
-              rating={5}
-              body="Just finished reading 'The Midnight Library' by Matt Haig at this cozy book café. What an incredible journey through possibilities and the value of life. The ambiance here perfectly complemented the read. Absolutely loved it! #BookRecommendations #CaféHopping"
-              avatar="/placeholder.svg?height=40&width=40&text=JD"
-              likes={23}
-            />
+            {userPosts.map((post, index) => (
+              <div key={post.post_id}>
+                <PostCard
+                  name={`${firstName} ${lastName}`}
+                  username={username}
+                  restaurantName={post.loc_name}
+                  address={post.loc_address}
+                  rating={post.loc_review}
+                  body={post.loc_content}
+                  avatar={imageUrl}
+                  likes={0}
+                />
+                {index < userPosts.length - 1 && <Separator />}
+              </div>
+            ))}
           </div>
         </TabsContent>
         <TabsContent value="following">
           <Card className="border-0 shadow-none max-w-3xl mx-auto">
-            {[1, 2, 3, 4, 5, 6].map((user, index) => (
-              <div key={user}>
-                <UserCard
-                  name={`User ${user}`}
-                  username={`user${user}`}
-                  avatar={`/placeholder.svg?height=40&width=40&text=U${user}`}
-                  isFollowing={followingUsers.includes(user)}
-                  onFollowToggle={() => toggleFollow(user)}
-                />
-                {index < 5 && <Separator />}
+            {following.length === 0 ? (
+              <div className="p-4 text-center text-muted-foreground">
+                Not following anyone yet
               </div>
-            ))}
+            ) : (
+              following.map((user, index) => (
+                <div key={user.id}>
+                  <UserCard
+                    name={`${user.firstName} ${user.lastName}`}
+                    username={user.username || ''}
+                    avatar={user.imageUrl}
+                    isFollowing={true}
+                    onFollowToggle={() => toggleFollow(1)}
+                  />
+                  {index < following.length - 1 && <Separator />}
+                </div>
+              ))
+            )}
           </Card>
         </TabsContent>
         <TabsContent value="followers">
           <Card className="border-0 shadow-none max-w-3xl mx-auto">
-            {[1, 2, 3, 4, 5, 6].map((user, index) => (
-              <div key={user}>
-                <UserCard
-                  name={`Fan ${user}`}
-                  username={`fan${user}`}
-                  avatar={`/placeholder.svg?height=40&width=40&text=F${user}`}
-                  isFollowing={followingUsers.includes(user)}
-                  onFollowToggle={() => toggleFollow(user)}
-                />
-                {index < 5 && <Separator />}
+            {followers.length === 0 ? (
+              <div className="p-4 text-center text-muted-foreground">
+                No followers yet
               </div>
-            ))}
+            ) : (
+              followers.map((user, index) => (
+                <div key={user.id}>
+                  <UserCard
+                    name={`${user.firstName} ${user.lastName}`}
+                    username={user.username || ''}
+                    avatar={user.imageUrl}
+                    isFollowing={following.some((f) => f.id === user.id)}
+                    onFollowToggle={() =>
+                      following.some((f) => f.id === user.id)
+                        ? toggleFollow(1)
+                        : toggleFollow(1)
+                    }
+                  />
+                  {index < followers.length - 1 && <Separator />}
+                </div>
+              ))
+            )}
           </Card>
         </TabsContent>
       </Tabs>
