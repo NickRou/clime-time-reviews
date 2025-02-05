@@ -6,6 +6,7 @@ import { db } from '@/db'
 import { eq, and, desc } from 'drizzle-orm'
 import { User } from '@/lib/types'
 import { Follows } from '@/db/schema'
+import { Likes } from '@/db/schema'
 
 // ---- CLERK USERS ----
 export async function getAllUsers(): Promise<User[] | null> {
@@ -154,4 +155,32 @@ export async function removeFollower(followerId: string) {
     .where(
       and(eq(Follows.follower_id, followerId), eq(Follows.followee_id, userId))
     )
+}
+
+// ---- LIKES ----
+export async function likePost(postId: string) {
+  const { userId } = await auth()
+  if (!userId) throw new Error('User not found')
+
+  // Insert new like
+  await db.insert(Likes).values({
+    post_id: postId,
+    user_id: userId,
+  })
+}
+
+export async function unlikePost(postId: string) {
+  const { userId } = await auth()
+  if (!userId) throw new Error('User not found')
+
+  await db
+    .delete(Likes)
+    .where(and(eq(Likes.user_id, userId), eq(Likes.post_id, postId)))
+}
+
+export async function getPostLikes(postId: string) {
+  const likes = await db.query.Likes.findMany({
+    where: eq(Likes.post_id, postId),
+  })
+  return likes
 }

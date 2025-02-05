@@ -13,9 +13,6 @@ export default async function ProfilePage({
   const allUsers = await getAllUsers()
   const user = allUsers?.find((user) => user.username === id)
 
-  console.log(user)
-  console.log(allUsers)
-
   if (
     !user ||
     !user.username ||
@@ -37,7 +34,6 @@ export default async function ProfilePage({
         firstName={firstName}
         lastName={lastName}
         imageUrl={imageUrl}
-        allUsers={allUsers}
       />
     </Suspense>
   )

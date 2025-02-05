@@ -15,3 +15,8 @@ export type Post = {
   loc_content: string
   createTs: Date
 }
+
+export type Like = {
+  post_id: string
+  user_id: string
+}

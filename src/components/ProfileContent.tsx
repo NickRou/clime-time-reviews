@@ -16,6 +16,7 @@ import {
   getFollowers,
   unfollowUser,
   removeFollower,
+  deletePost,
 } from '@/lib/actions'
 import { Post, User } from '@/lib/types'
 
@@ -71,6 +72,16 @@ export default function ProfileContent({
       setFollowers(followers.filter((user) => user.id !== followerId))
     } catch (error) {
       console.error('Failed to remove follower:', error)
+    }
+  }
+
+  const deletePostHandler = async (postId: string) => {
+    try {
+      await deletePost(postId)
+      // Remove the deleted post from the local state
+      setUserPosts(userPosts.filter((post) => post.post_id !== postId))
+    } catch (error) {
+      console.error('Failed to delete post:', error)
     }
   }
 
@@ -135,6 +146,11 @@ export default function ProfileContent({
                   body={post.loc_content}
                   avatar={imageUrl}
                   likes={0}
+                  postId={post.post_id}
+                  isLiked={false}
+                  onLikeToggle={() => {}}
+                  showDeleteButton={true}
+                  onDelete={() => deletePostHandler(post.post_id)}
                 />
                 {index < userPosts.length && <Separator />}
               </div>
