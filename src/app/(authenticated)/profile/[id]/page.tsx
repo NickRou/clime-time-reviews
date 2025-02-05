@@ -18,15 +18,7 @@ async function ProfileData({ id }: { id: string }) {
   const allUsers = await getAllUsers()
   const user = allUsers?.find((user) => user.username === id)
 
-  if (
-    !currentUser ||
-    !user ||
-    !user.username ||
-    !user.firstName ||
-    !user.lastName ||
-    !user.imageUrl ||
-    !allUsers
-  ) {
+  if (!currentUser || !user || !user.username || !user.imageUrl || !allUsers) {
     return notFound()
   }
 

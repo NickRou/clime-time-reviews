@@ -236,7 +236,7 @@ export default function ProfileContent({
               following.map((user, index) => (
                 <div key={user.id}>
                   <UserCard
-                    name={`${user.firstName} ${user.lastName}`}
+                    name={`${user.firstName || ''} ${user.lastName || ''}`}
                     username={user.username || ''}
                     avatar={user.imageUrl}
                     showFollowingButton={profileIsCurrentUser}
@@ -259,7 +259,7 @@ export default function ProfileContent({
               followers.map((user, index) => (
                 <div key={user.id}>
                   <UserCard
-                    name={`${user.firstName} ${user.lastName}`}
+                    name={`${user.firstName || ''} ${user.lastName || ''}`}
                     username={user.username || ''}
                     avatar={user.imageUrl}
                     showFollowingButton={false}
