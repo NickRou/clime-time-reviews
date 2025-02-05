@@ -3,7 +3,7 @@
 import { auth, clerkClient, currentUser } from '@clerk/nextjs/server'
 import { Posts } from '@/db/schema'
 import { db } from '@/db'
-import { eq, and, desc, sql } from 'drizzle-orm'
+import { eq, and, sql } from 'drizzle-orm'
 import { User } from '@/lib/types'
 import { Follows } from '@/db/schema'
 import { Likes } from '@/db/schema'
