@@ -35,6 +35,7 @@ export default function PostCard({
   showDeleteButton,
   onDelete,
 }: PostCardProps) {
+  console.log('POST CARD LIKED: ' + isLiked)
   return (
     <Card className="w-full max-w-3xl border-0 shadow-none">
       <CardContent className="pt-6">
@@ -76,7 +77,7 @@ export default function PostCard({
             >
               <Heart
                 className={`w-4 h-4 mr-1 ${
-                  isLiked ? 'fill-red-500 text-red-500' : ''
+                  isLiked ? 'fill-red-500 stroke-red-500' : ''
                 }`}
               />
               <span className="text-xs">{likes}</span>

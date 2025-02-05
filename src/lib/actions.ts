@@ -3,7 +3,7 @@
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import { Posts } from '@/db/schema'
 import { db } from '@/db'
-import { eq, and, desc } from 'drizzle-orm'
+import { eq, and, desc, sql } from 'drizzle-orm'
 import { User } from '@/lib/types'
 import { Follows } from '@/db/schema'
 import { Likes } from '@/db/schema'
@@ -86,6 +86,29 @@ export async function getAllPosts() {
 export async function getPostsByUserId(userId: string) {
   const posts = await db.query.Posts.findMany({
     where: eq(Posts.user_id, userId),
+    orderBy: (posts, { desc }) => [desc(posts.createTs)],
+  })
+
+  return posts
+}
+
+export async function getFollowingPosts() {
+  const { userId } = await auth()
+  if (!userId) throw new Error('User not found')
+
+  // Get list of users being followed
+  const following = await db.query.Follows.findMany({
+    where: eq(Follows.follower_id, userId),
+  })
+
+  if (following.length === 0) return []
+
+  // Get posts from all followed users
+  const followeeIds = following.map((f) => f.followee_id)
+  const posts = await db.query.Posts.findMany({
+    where: (posts) => {
+      return sql`${posts.user_id} IN (${sql.join(followeeIds, ', ')})`
+    },
     orderBy: (posts, { desc }) => [desc(posts.createTs)],
   })
 

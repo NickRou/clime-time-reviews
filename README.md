@@ -28,8 +28,11 @@ Clime Time Reviews - A Next.js app for seeing reviews from your friends.
 - [x] setup databases for posts, user connections, etc...
 - [x] add db actions for posts, user connections, etc...
 - [x] hook up profile page, home page, and explore page to DB queries
-- [ ] add ability to like posts
-- [ ] add ability to create a post on the home page
+- [x] add ability to like posts
+- [x] add ability to create a post on the home page, and delete it in profile page
+- [x] add loading skeletons for home page and explore page
+- [x] navigate to user profile pages when clicking on a username or profile picture
+- [ ] general code cleanup
 - [ ] setup clerk webhooks to sync data with DB
 - [ ] setup custom Neon DB JWT template
 

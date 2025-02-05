@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -10,14 +10,7 @@ import { UserPlus, Users } from 'lucide-react'
 import PostCard from '@/components/PostCard'
 import UserCard from '@/components/UserCard'
 import Link from 'next/link'
-import {
-  getPostsByUserId,
-  getFollowing,
-  getFollowers,
-  unfollowUser,
-  removeFollower,
-  deletePost,
-} from '@/lib/actions'
+import { unfollowUser, removeFollower, deletePost } from '@/lib/actions'
 import { Post, User } from '@/lib/types'
 
 interface ProfileContentProps {
@@ -26,6 +19,9 @@ interface ProfileContentProps {
   firstName: string
   lastName: string
   imageUrl: string
+  initialPosts: Post[]
+  initialFollowing: User[]
+  initialFollowers: User[]
 }
 
 export default function ProfileContent({
@@ -34,26 +30,13 @@ export default function ProfileContent({
   firstName,
   lastName,
   imageUrl,
+  initialPosts,
+  initialFollowing,
+  initialFollowers,
 }: ProfileContentProps) {
-  const [userPosts, setUserPosts] = useState<Post[]>([])
-  const [following, setFollowing] = useState<User[]>([])
-  const [followers, setFollowers] = useState<User[]>([])
-
-  useEffect(() => {
-    Promise.all([
-      getPostsByUserId(userId),
-      getFollowing(userId),
-      getFollowers(userId),
-    ])
-      .then(([posts, followingUsers, followerUsers]) => {
-        setUserPosts(posts)
-        setFollowing(followingUsers)
-        setFollowers(followerUsers)
-      })
-      .catch((error) => {
-        console.error('Failed to fetch data:', error)
-      })
-  }, [userId])
+  const [userPosts, setUserPosts] = useState<Post[]>(initialPosts)
+  const [following, setFollowing] = useState<User[]>(initialFollowing)
+  const [followers, setFollowers] = useState<User[]>(initialFollowers)
 
   const toggleFollow = async (followeeId: string) => {
     try {
