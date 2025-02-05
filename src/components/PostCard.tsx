@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Heart, Trash2 } from 'lucide-react'
 import StarRating from '@/components/StarRating'
+import Link from 'next/link'
 
 interface PostCardProps {
   name: string
@@ -35,19 +36,24 @@ export default function PostCard({
   showDeleteButton,
   onDelete,
 }: PostCardProps) {
-  console.log('POST CARD LIKED: ' + isLiked)
   return (
     <Card className="w-full max-w-3xl border-0 shadow-none">
       <CardContent className="pt-6">
         <div className="flex items-start space-x-4">
-          <Avatar>
-            <AvatarImage src={avatar} alt={name} />
-            <AvatarFallback>{name.charAt(0)}</AvatarFallback>
-          </Avatar>
+          <Link href={`/profile/${username}`}>
+            <Avatar>
+              <AvatarImage src={avatar} alt={name} />
+              <AvatarFallback>{name.charAt(0)}</AvatarFallback>
+            </Avatar>
+          </Link>
           <div className="flex-1 min-w-0">
             <div className="flex items-center space-x-2">
-              <p className="text-sm font-medium">{name}</p>
-              <p className="text-sm text-muted-foreground">@{username}</p>
+              <Link href={`/profile/${username}`} className="hover:underline">
+                <p className="text-sm font-medium">{name}</p>
+              </Link>
+              <Link href={`/profile/${username}`} className="hover:underline">
+                <p className="text-sm text-muted-foreground">@{username}</p>
+              </Link>
             </div>
             <div className="mt-4">
               <p className="text-sm font-medium">{restaurantName}</p>

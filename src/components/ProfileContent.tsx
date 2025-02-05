@@ -10,10 +10,18 @@ import { UserPlus, Users } from 'lucide-react'
 import PostCard from '@/components/PostCard'
 import UserCard from '@/components/UserCard'
 import Link from 'next/link'
-import { unfollowUser, removeFollower, deletePost } from '@/lib/actions'
-import { Post, User } from '@/lib/types'
+import {
+  unfollowUser,
+  followUser,
+  removeFollower,
+  deletePost,
+  likePost,
+  unlikePost,
+} from '@/lib/actions'
+import { Post, User, Like } from '@/lib/types'
 
 interface ProfileContentProps {
+  currentUser: User
   userId: string
   username: string
   firstName: string
@@ -22,9 +30,12 @@ interface ProfileContentProps {
   initialPosts: Post[]
   initialFollowing: User[]
   initialFollowers: User[]
+  initialLikes: Like[]
+  isFollowing?: boolean
 }
 
 export default function ProfileContent({
+  currentUser,
   userId,
   username,
   firstName,
@@ -33,25 +44,56 @@ export default function ProfileContent({
   initialPosts,
   initialFollowing,
   initialFollowers,
+  initialLikes,
+  isFollowing,
 }: ProfileContentProps) {
   const [userPosts, setUserPosts] = useState<Post[]>(initialPosts)
   const [following, setFollowing] = useState<User[]>(initialFollowing)
   const [followers, setFollowers] = useState<User[]>(initialFollowers)
+  const [isFollowingUser, setIsFollowingUser] = useState(isFollowing)
+  const [likes, setLikes] = useState<Like[]>(initialLikes)
+  const profileIsCurrentUser = currentUser.id === userId
 
   const toggleFollow = async (followeeId: string) => {
     try {
-      await unfollowUser(followeeId)
-      // Remove the unfollowed user from the following list
-      setFollowing(following.filter((user) => user.id !== followeeId))
+      if (isFollowingUser) {
+        await unfollowUser(followeeId)
+        setIsFollowingUser(false)
+        setFollowers(followers.filter((user) => user.id !== currentUser.id))
+      } else {
+        await followUser(followeeId)
+        setIsFollowingUser(true)
+        setFollowers([...followers, currentUser])
+      }
     } catch (error) {
-      console.error('Failed to unfollow user:', error)
+      console.error('Failed to toggle follow:', error)
+    }
+  }
+
+  const toggleFollowingUser = async (followeeId: string) => {
+    try {
+      const isCurrentlyFollowing = following.some(
+        (user) => user.id === followeeId
+      )
+
+      if (isCurrentlyFollowing) {
+        await unfollowUser(followeeId)
+        setFollowing(following.filter((user) => user.id !== followeeId))
+      } else {
+        const userToFollow = followers.find((user) => user.id === followeeId)
+        if (userToFollow) {
+          await followUser(followeeId)
+          setFollowing([...following, userToFollow])
+        }
+      }
+    } catch (error) {
+      console.error('Failed to toggle following:', error)
     }
   }
 
   const removeFollowerHandler = async (followerId: string) => {
     try {
       await removeFollower(followerId)
-      // Remove the follower from the local state
       setFollowers(followers.filter((user) => user.id !== followerId))
     } catch (error) {
       console.error('Failed to remove follower:', error)
@@ -61,10 +103,37 @@ export default function ProfileContent({
   const deletePostHandler = async (postId: string) => {
     try {
       await deletePost(postId)
-      // Remove the deleted post from the local state
       setUserPosts(userPosts.filter((post) => post.post_id !== postId))
     } catch (error) {
       console.error('Failed to delete post:', error)
+    }
+  }
+
+  const handleLikeToggle = async (postId: string) => {
+    if (!currentUser.id) {
+      console.error('User not found')
+      return null
+    }
+
+    const isLiked = likes.some(
+      (like) => like.post_id === postId && like.user_id === currentUser.id
+    )
+
+    try {
+      if (isLiked) {
+        await unlikePost(postId)
+        setLikes(
+          likes.filter(
+            (like) =>
+              !(like.post_id === postId && like.user_id === currentUser.id)
+          )
+        )
+      } else {
+        await likePost(postId)
+        setLikes([...likes, { post_id: postId, user_id: currentUser.id }])
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error)
     }
   }
 
@@ -102,9 +171,18 @@ export default function ProfileContent({
             </div>
           </div>
           <div className="mt-4 sm:mt-0 sm:ml-auto">
-            <Link href={`/profile/${username}/manage`}>
-              <Button>Edit profile</Button>
-            </Link>
+            {profileIsCurrentUser ? (
+              <Link href={`/profile/${username}/manage`}>
+                <Button>Edit profile</Button>
+              </Link>
+            ) : (
+              <Button
+                onClick={() => toggleFollow(userId)}
+                variant={isFollowingUser ? 'secondary' : 'default'}
+              >
+                {isFollowingUser ? 'Unfollow' : 'Follow'}
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -123,17 +201,25 @@ export default function ProfileContent({
                 <PostCard
                   name={`${firstName} ${lastName}`}
                   username={username}
+                  postId={post.post_id}
                   restaurantName={post.loc_name}
                   address={post.loc_address}
                   rating={post.loc_review}
                   body={post.loc_content}
                   avatar={imageUrl}
-                  likes={0}
-                  postId={post.post_id}
-                  isLiked={false}
-                  onLikeToggle={() => {}}
-                  showDeleteButton={true}
-                  onDelete={() => deletePostHandler(post.post_id)}
+                  likes={
+                    likes.filter((like) => like.post_id === post.post_id).length
+                  }
+                  isLiked={likes.some(
+                    (like) =>
+                      like.post_id === post.post_id &&
+                      like.user_id === currentUser.id
+                  )}
+                  onLikeToggle={() => handleLikeToggle(post.post_id)}
+                  showDeleteButton={profileIsCurrentUser}
+                  onDelete={() =>
+                    profileIsCurrentUser && deletePostHandler(post.post_id)
+                  }
                 />
                 {index < userPosts.length && <Separator />}
               </div>
@@ -153,9 +239,9 @@ export default function ProfileContent({
                     name={`${user.firstName} ${user.lastName}`}
                     username={user.username || ''}
                     avatar={user.imageUrl}
-                    showFollowingButton={true}
+                    showFollowingButton={profileIsCurrentUser}
                     isFollowing={true}
-                    onFollowToggle={() => toggleFollow(user.id)}
+                    onFollowToggle={() => toggleFollowingUser(user.id)}
                   />
                   {index < following.length && <Separator />}
                 </div>
@@ -177,7 +263,7 @@ export default function ProfileContent({
                     username={user.username || ''}
                     avatar={user.imageUrl}
                     showFollowingButton={false}
-                    showRemoveButton={true}
+                    showRemoveButton={profileIsCurrentUser}
                     onRemove={() => removeFollowerHandler(user.id)}
                   />
                   {index < followers.length && <Separator />}

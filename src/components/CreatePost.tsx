@@ -7,6 +7,7 @@ import { Textarea } from './ui/textarea'
 import { Input } from './ui/input'
 import { createPost } from '@/lib/actions'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import Link from 'next/link'
 
 export default function CreatePost() {
   const { user } = useUser()
@@ -44,13 +45,15 @@ export default function CreatePost() {
     <div className="w-full p-6 bg-white dark:bg-gray-950 border dark:border-gray-800 rounded-xl shadow-sm">
       <form onSubmit={handleSubmit}>
         <div className="flex gap-4">
-          <Avatar className="h-10 w-10">
-            <AvatarImage src={user.imageUrl} alt={user.username ?? ''} />
-            <AvatarFallback>
-              {user.firstName?.charAt(0)}
-              {user.lastName?.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
+          <Link href={`/profile/${user.username}`}>
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={user.imageUrl} alt={user.username ?? ''} />
+              <AvatarFallback>
+                {user.firstName?.charAt(0)}
+                {user.lastName?.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+          </Link>
 
           <div className="flex-1 space-y-4">
             {!isExpanded ? (

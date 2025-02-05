@@ -1,6 +1,6 @@
 'use server'
 
-import { auth, clerkClient } from '@clerk/nextjs/server'
+import { auth, clerkClient, currentUser } from '@clerk/nextjs/server'
 import { Posts } from '@/db/schema'
 import { db } from '@/db'
 import { eq, and, desc, sql } from 'drizzle-orm'
@@ -9,6 +9,14 @@ import { Follows } from '@/db/schema'
 import { Likes } from '@/db/schema'
 
 // ---- CLERK USERS ----
+export async function getCurrentUser() {
+  const user = await currentUser()
+  if (!user) {
+    return null
+  }
+  return user
+}
+
 export async function getAllUsers(): Promise<User[] | null> {
   const { userId } = await auth()
 
@@ -70,6 +78,10 @@ export async function deletePost(postId: string) {
   const { userId } = await auth()
   if (!userId) throw new Error('User not found')
 
+  // Delete all likes associated with the post first
+  await db.delete(Likes).where(eq(Likes.post_id, postId))
+
+  // Then delete the post
   await db
     .delete(Posts)
     .where(and(eq(Posts.user_id, userId), eq(Posts.post_id, postId)))
