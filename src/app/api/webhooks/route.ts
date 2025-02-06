@@ -48,20 +48,24 @@ export async function POST(req: Request) {
     })
   }
 
+  // get data from event
   const { id, username, first_name, last_name, image_url } =
     evt.data as UserJSON
-
-  // none of the user data should be null -- this is configured in the Clerk Dashboard
-  if (!username || !first_name || !last_name || !image_url) {
-    return new Response('Error: User data is missing', {
-      status: 400,
-    })
-  }
-
   const eventType = evt.type
+
   if (eventType === 'user.created') {
+    if (!id || !username || !first_name || !last_name || !image_url) {
+      return new Response('Error: User data is missing', {
+        status: 400,
+      })
+    }
     await createDbUser(id, username, first_name, last_name, image_url)
   } else if (eventType === 'user.updated') {
+    if (!id || !username || !first_name || !last_name || !image_url) {
+      return new Response('Error: User data is missing', {
+        status: 400,
+      })
+    }
     await updateDbUser(id, username, first_name, last_name, image_url)
   } else if (eventType === 'user.deleted') {
     await deleteDbUser(id)
