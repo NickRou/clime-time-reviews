@@ -24,6 +24,9 @@ export default function RootLayout({
   return (
     <ClerkProvider afterSignOutUrl="/">
       <html lang="en" className={lato.className} suppressHydrationWarning>
+        <head>
+          <link rel="icon" href="/clime-time-logo.png" />
+        </head>
         <body>
           <ThemeProvider
             attribute="class"

@@ -14,7 +14,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from '@/components/ui/sidebar'
-
+import Image from 'next/image'
 export function AppSidebar({
   username: username,
   ...props
@@ -27,7 +27,12 @@ export function AppSidebar({
             <SidebarMenuButton size="lg" asChild>
               <a href="/home">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground">
-                  <Clock className="size-4" color="#ff0000" />
+                  <Image
+                    src="/clime-time-logo.png"
+                    alt="Clime Time Logo"
+                    width={32}
+                    height={32}
+                  />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">Clime Time Reviews</span>
