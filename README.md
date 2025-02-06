@@ -34,8 +34,12 @@ Clime Time Reviews - A Next.js app for seeing reviews from your friends.
 - [x] navigate to user profile pages when clicking on a username or profile picture
 - [x] setup prod instance of clerk auth
 - [x] setup custom domain on vercel
+- [ ] display date of post on the post
 - [ ] make address links clickable?
 - [ ] optimize data loading on pages make more dynamic skeleton components
 - [ ] general code cleanup
+- [ ] address auto complete
+- [ ] update icon with custom logo
+- [ ] map of reviews?
 - [ ] setup clerk webhooks to sync data with DB
 - [ ] setup custom Neon DB JWT template

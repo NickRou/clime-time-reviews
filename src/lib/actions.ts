@@ -118,9 +118,7 @@ export async function getFollowingPosts() {
   // Get posts from all followed users
   const followeeIds = following.map((f) => f.followee_id)
   const posts = await db.query.Posts.findMany({
-    where: (posts) => {
-      return sql`${posts.user_id} IN (${sql.join(followeeIds, ', ')})`
-    },
+    where: sql`${Posts.user_id} = ANY(${followeeIds})`,
     orderBy: (posts, { desc }) => [desc(posts.createTs)],
   })
 
