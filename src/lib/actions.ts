@@ -120,10 +120,6 @@ export async function getFollowingPosts() {
   const posts = await db.query.Posts.findMany({
     where: inArray(Posts.user_id, followeeIds),
     orderBy: (posts, { desc }) => [desc(posts.createTs)],
-    with: {
-      likes: true,
-      user: true,
-    },
   })
 
   return posts
