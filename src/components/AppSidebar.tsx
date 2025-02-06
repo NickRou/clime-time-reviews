@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Clock, Home, Search, User } from 'lucide-react'
+import { Home, Search, User } from 'lucide-react'
 
 import {
   Sidebar,
