@@ -3,7 +3,7 @@
 import { auth, clerkClient, currentUser } from '@clerk/nextjs/server'
 import { Posts } from '@/db/schema'
 import { db } from '@/db'
-import { eq, and, sql } from 'drizzle-orm'
+import { eq, and, inArray } from 'drizzle-orm'
 import { User } from '@/lib/types'
 import { Follows } from '@/db/schema'
 import { Likes } from '@/db/schema'
@@ -115,11 +115,15 @@ export async function getFollowingPosts() {
 
   if (following.length === 0) return []
 
-  // Get posts from all followed users
+  // Get posts from all followed users using Drizzle's query builder
   const followeeIds = following.map((f) => f.followee_id)
   const posts = await db.query.Posts.findMany({
-    where: sql`${Posts.user_id} = ANY(${followeeIds})`,
+    where: inArray(Posts.user_id, followeeIds),
     orderBy: (posts, { desc }) => [desc(posts.createTs)],
+    with: {
+      likes: true,
+      user: true,
+    },
   })
 
   return posts
