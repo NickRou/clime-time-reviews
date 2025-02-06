@@ -7,6 +7,7 @@ import { eq, and, inArray } from 'drizzle-orm'
 import { User } from '@/lib/types'
 import { Follows } from '@/db/schema'
 import { Likes } from '@/db/schema'
+import { Users } from '@/db/schema'
 
 // ---- CLERK USERS ----
 export async function getCurrentUser() {
@@ -216,4 +217,54 @@ export async function getPostLikes(postId: string) {
     where: eq(Likes.post_id, postId),
   })
   return likes
+}
+
+// ---- DB USERS ----
+export async function createDbUser(
+  id: string,
+  username: string,
+  firstName: string,
+  lastName: string,
+  imageUrl: string
+) {
+  await db.insert(Users).values({
+    user_id: id,
+    username: username,
+    first_name: firstName,
+    last_name: lastName,
+    image_url: imageUrl,
+  })
+}
+
+export async function updateDbUser(
+  id: string,
+  username: string,
+  firstName: string,
+  lastName: string,
+  imageUrl: string
+) {
+  await db
+    .update(Users)
+    .set({
+      username: username,
+      first_name: firstName,
+      last_name: lastName,
+      image_url: imageUrl,
+    })
+    .where(eq(Users.user_id, id))
+}
+
+export async function deleteDbUser(id: string) {
+  // Delete all likes by this user
+  await db.delete(Likes).where(eq(Likes.user_id, id))
+
+  // Delete all follows relationships involving this user
+  await db.delete(Follows).where(eq(Follows.follower_id, id))
+  await db.delete(Follows).where(eq(Follows.followee_id, id))
+
+  // Delete all posts by this user
+  await db.delete(Posts).where(eq(Posts.user_id, id))
+
+  // Finally, delete the user
+  await db.delete(Users).where(eq(Users.user_id, id))
 }

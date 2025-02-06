@@ -9,7 +9,9 @@ import {
 
 export const Posts = pgTable('posts', {
   post_id: uuid('post_id').primaryKey().defaultRandom(),
-  user_id: text('user_id').notNull(),
+  user_id: text('user_id')
+    .notNull()
+    .references(() => Users.user_id),
   loc_name: text('loc_name').notNull(),
   loc_address: text('loc_address').notNull(),
   loc_review: integer('loc_review').notNull(),
@@ -19,16 +21,24 @@ export const Posts = pgTable('posts', {
 
 export const Likes = pgTable('likes', {
   like_id: uuid('like_id').primaryKey().defaultRandom(),
-  post_id: uuid('post_id').notNull(),
-  user_id: text('user_id').notNull(),
+  post_id: uuid('post_id')
+    .notNull()
+    .references(() => Posts.post_id),
+  user_id: text('user_id')
+    .notNull()
+    .references(() => Users.user_id),
   createTs: timestamp('create_ts').defaultNow().notNull(),
 })
 
 export const Follows = pgTable(
   'follows',
   {
-    follower_id: text('follower_id').notNull(),
-    followee_id: text('followee_id').notNull(),
+    follower_id: text('follower_id')
+      .notNull()
+      .references(() => Users.user_id),
+    followee_id: text('followee_id')
+      .notNull()
+      .references(() => Users.user_id),
     createTs: timestamp('create_ts').defaultNow().notNull(),
   },
   (table) => {
@@ -37,3 +47,12 @@ export const Follows = pgTable(
     }
   }
 )
+
+export const Users = pgTable('users', {
+  user_id: text('user_id').primaryKey(),
+  username: text('username').notNull(),
+  first_name: text('first_name').notNull(),
+  last_name: text('last_name').notNull(),
+  image_url: text('image_url'),
+  createTs: timestamp('create_ts').defaultNow().notNull(),
+})
