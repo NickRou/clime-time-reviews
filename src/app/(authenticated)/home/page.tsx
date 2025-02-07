@@ -18,7 +18,7 @@ export default async function HomePage() {
     <div className="container mx-auto max-w-3xl px-4 py-8">
       <Tabs defaultValue="for-you" className="w-full">
         <TabsList className="grid w-full grid-cols-1 max-w-3xl mx-auto">
-          <TabsTrigger value="for-you">For You</TabsTrigger>
+          <TabsTrigger value="for-you">Following</TabsTrigger>
         </TabsList>
         <TabsContent value="for-you">
           <div className="grid max-w-3xl mx-auto">

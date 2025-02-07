@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Home, Search, User } from 'lucide-react'
+import { FolderKanban, Home, Search, User } from 'lucide-react'
 
 import {
   Sidebar,
@@ -36,7 +36,7 @@ export function AppSidebar({
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">Clime Time Reviews</span>
-                  <span className="">v1.0.1</span>
+                  <span className="">v1.0.4</span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -58,7 +58,7 @@ export function AppSidebar({
               <SidebarMenuButton asChild>
                 <a href="/explore" className="font-medium">
                   <Search />
-                  Explore
+                  Find Users
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -76,6 +76,7 @@ export function AppSidebar({
                       href={`/profile/${username}/manage`}
                       className="font-small"
                     >
+                      <FolderKanban />
                       Manage
                     </a>
                   </SidebarMenuSubButton>

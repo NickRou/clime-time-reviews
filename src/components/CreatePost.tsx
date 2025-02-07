@@ -68,13 +68,13 @@ export default function CreatePost() {
                 <div className="grid gap-4">
                   <Input
                     name="locName"
-                    placeholder="Restaurant name"
+                    placeholder="Location name"
                     className="bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800"
                     required
                   />
                   <Input
                     name="locAddress"
-                    placeholder="Restaurant address"
+                    placeholder="Location address"
                     className="bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800"
                     required
                   />
