@@ -8,11 +8,15 @@ import { Input } from './ui/input'
 import { createPost } from '@/lib/actions'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import Link from 'next/link'
+import { PriceRangeSelect } from './PriceRangeSelect'
+import { StarRating } from './StarRating'
 
 export default function CreatePost() {
   const { user } = useUser()
   const [isExpanded, setIsExpanded] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [priceRange, setPriceRange] = useState(0)
+  const [rating, setRating] = useState(0)
 
   const handleExpand = useCallback(() => {
     setIsExpanded(true)
@@ -26,17 +30,24 @@ export default function CreatePost() {
 
       try {
         const formData = new FormData(form)
+        const content = form.locContent.value
+        formData.delete('locContent')
+        formData.append('locContent', content)
+        formData.append('locCost', priceRange.toString())
+        formData.append('locReview', rating.toString())
         await createPost(formData)
 
         setIsExpanded(false)
         form.reset()
+        setPriceRange(0)
+        setRating(0)
       } catch (error) {
         console.error('Error creating post:', error)
       } finally {
         setIsSubmitting(false)
       }
     },
-    []
+    [priceRange, rating]
   )
 
   if (!user) return null
@@ -78,19 +89,25 @@ export default function CreatePost() {
                     className="bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800"
                     required
                   />
-                  <Input
-                    name="locReview"
-                    type="number"
-                    min="1"
-                    max="10"
-                    placeholder="Rating (1-10)"
-                    className="bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800"
-                    required
-                  />
+                  <div className="space-y-2">
+                    <label className="text-sm text-gray-500 dark:text-gray-400">
+                      Price Range
+                    </label>
+                    <PriceRangeSelect
+                      value={priceRange}
+                      onChange={setPriceRange}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm text-gray-500 dark:text-gray-400">
+                      Rating
+                    </label>
+                    <StarRating value={rating} onChange={setRating} />
+                  </div>
                   <Textarea
                     name="locContent"
                     placeholder="Write your review..."
-                    className="bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800 min-h-[100px]"
+                    className="bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800 min-h-[100px] whitespace-pre-wrap"
                     required
                   />
                 </div>

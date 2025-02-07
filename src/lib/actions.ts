@@ -39,6 +39,7 @@ export async function createPost(formData: FormData) {
   const locAddress = formData.get('locAddress') as string
   const locReview = formData.get('locReview') as string
   const locContent = formData.get('locContent') as string
+  const locCost = formData.get('locCost') as string
 
   await db.insert(Posts).values({
     user_id: userId,
@@ -46,6 +47,7 @@ export async function createPost(formData: FormData) {
     loc_address: locAddress,
     loc_review: parseInt(locReview),
     loc_content: locContent,
+    loc_cost: parseInt(locCost),
   })
 }
 

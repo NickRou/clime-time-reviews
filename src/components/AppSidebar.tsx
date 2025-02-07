@@ -35,7 +35,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">Clime Time Reviews</span>
-                  <span className="">v1.0.4</span>
+                  <span className="">v1.0.5</span>
                 </div>
               </Link>
             </SidebarMenuButton>

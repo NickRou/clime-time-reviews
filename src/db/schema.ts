@@ -17,6 +17,7 @@ export const Posts = pgTable('posts', {
   loc_address: text('loc_address').notNull(),
   loc_review: integer('loc_review').notNull(),
   loc_content: text('loc_content').notNull(),
+  loc_cost: integer('loc_cost').notNull().default(0),
   createTs: timestamp('create_ts').defaultNow().notNull(),
 })
 

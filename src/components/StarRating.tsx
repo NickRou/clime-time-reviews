@@ -1,24 +1,47 @@
 import { Star, StarHalf } from 'lucide-react'
 
 interface StarRatingProps {
-  rating: number
+  value: number
+  onChange: (value: number) => void
 }
 
-export default function StarRating({ rating }: StarRatingProps) {
-  // Convert rating from 10 to 5 scale
-  const convertedRating = rating / 2
-  const fullStars = Math.floor(convertedRating)
-  const hasHalfStar = convertedRating % 1 !== 0
+export function StarRating({ value, onChange }: StarRatingProps) {
+  const stars = Array.from({ length: 5 }, (_, i) => i + 1)
+
+  const handleClick = (starIndex: number, isHalf: boolean) => {
+    if (starIndex === 1 && isHalf && value > 0) {
+      onChange(0)
+      return
+    }
+    const newValue = isHalf ? starIndex * 2 - 1 : starIndex * 2
+    onChange(newValue)
+  }
 
   return (
-    <div className="flex items-center">
-      {[...Array(fullStars)].map((_, index) => (
-        <Star key={index} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+    <div className="flex gap-2">
+      {stars.map((star) => (
+        <div key={star} className="relative">
+          {/* Half star clickable area */}
+          <div
+            className="absolute w-1/2 h-full cursor-pointer z-10"
+            onClick={() => handleClick(star, true)}
+          />
+          {/* Full star clickable area */}
+          <div
+            className="absolute w-1/2 h-full cursor-pointer z-10 left-1/2"
+            onClick={() => handleClick(star, false)}
+          />
+          <div className="text-yellow-400 flex">
+            {value >= star * 2 ? (
+              <Star fill="currentColor" size={40} />
+            ) : value >= star * 2 - 1 ? (
+              <StarHalf fill="currentColor" size={40} />
+            ) : (
+              <Star size={40} />
+            )}
+          </div>
+        </div>
       ))}
-      {hasHalfStar && (
-        <StarHalf className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-      )}
-      <span className="ml-1 text-sm text-gray-600">{rating / 2}/5</span>
     </div>
   )
 }

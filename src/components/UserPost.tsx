@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Heart, Trash2 } from 'lucide-react'
-import StarRating from '@/components/StarRating'
+import StarRating from '@/components/DisplayStarRating'
 import Link from 'next/link'
 import { PostWithUser, Like } from '@/lib/types'
 import { useEffect, useState } from 'react'
@@ -21,7 +21,16 @@ export default function UserPost({
   currentUserId,
   onDelete,
 }: UserPostProps) {
-  const { post_id, loc_name, loc_address, loc_review, loc_content, user } = post
+  const {
+    post_id,
+    loc_name,
+    loc_address,
+    loc_review,
+    loc_content,
+    loc_cost,
+    user,
+    createTs,
+  } = post
   const { username, first_name, last_name, image_url } = user
 
   const [likes, setLikes] = useState<Like[]>([])
@@ -71,13 +80,28 @@ export default function UserPost({
               <Link href={`/profile/${username}`} className="hover:underline">
                 <p className="text-sm text-muted-foreground">@{username}</p>
               </Link>
+              <span className="text-sm text-muted-foreground">
+                •{' '}
+                {new Date(createTs).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: '2-digit',
+                })}
+              </span>
             </div>
             <div className="mt-4">
               <p className="text-sm font-medium">{loc_name}</p>
               <p className="text-sm text-muted-foreground">{loc_address}</p>
-              <StarRating rating={loc_review} />
+              <div className="flex items-center gap-1">
+                <StarRating rating={loc_review} />
+                {loc_cost > 0 && (
+                  <span className="text-sm text-muted-foreground">
+                    • {'$'.repeat(loc_cost)}
+                  </span>
+                )}
+              </div>
             </div>
-            <p className="mt-2 text-sm">{loc_content}</p>
+            <p className="mt-2 text-sm whitespace-pre-wrap">{loc_content}</p>
           </div>
         </div>
         {currentUserId !== user.user_id && (
