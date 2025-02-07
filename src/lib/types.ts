@@ -1,9 +1,9 @@
 export type User = {
-  id: string
-  firstName: string
-  lastName: string
+  user_id: string
+  first_name: string
+  last_name: string
   username: string
-  imageUrl: string
+  image_url: string
 }
 
 export type Post = {
@@ -14,6 +14,10 @@ export type Post = {
   loc_review: number
   loc_content: string
   createTs: Date
+}
+
+export type PostWithUser = Post & {
+  user: User
 }
 
 export type Like = {

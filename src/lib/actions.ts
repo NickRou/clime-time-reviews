@@ -1,59 +1,33 @@
 'use server'
 
-import { auth, clerkClient, currentUser } from '@clerk/nextjs/server'
+import { auth, currentUser } from '@clerk/nextjs/server'
 import { Posts } from '@/db/schema'
 import { db } from '@/db'
-import { eq, and, inArray } from 'drizzle-orm'
-import { User } from '@/lib/types'
+import { eq, and, inArray, not } from 'drizzle-orm'
+import { PostWithUser, User } from '@/lib/types'
 import { Follows } from '@/db/schema'
 import { Likes } from '@/db/schema'
 import { Users } from '@/db/schema'
 
-// ---- CLERK USERS ----
-export async function getCurrentUser() {
-  const user = await currentUser()
-  if (!user) {
-    return null
+// ---- CLERK ----
+export async function getCurrentUser(): Promise<User> {
+  const clerkUser = await currentUser()
+  if (
+    !clerkUser ||
+    !clerkUser.username ||
+    !clerkUser.firstName ||
+    !clerkUser.lastName ||
+    !clerkUser.imageUrl
+  ) {
+    throw new Error('User not found')
   }
-  return user
-}
-
-export async function getAllUsers(): Promise<User[] | null> {
-  const { userId } = await auth()
-
-  if (!userId) {
-    return null
+  return {
+    user_id: clerkUser.id,
+    username: clerkUser.username,
+    first_name: clerkUser.firstName,
+    last_name: clerkUser.lastName,
+    image_url: clerkUser.imageUrl,
   }
-
-  const client = await clerkClient()
-  const usersResourceResponse = await client.users.getUserList()
-  if (usersResourceResponse.data.length === 0) {
-    return null
-  }
-  const users = usersResourceResponse.data.map((user) => ({
-    id: user.id,
-    username: user.username,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    imageUrl: user.imageUrl,
-  })) as User[]
-
-  return users
-}
-
-export async function getUserByUsername(username: string) {
-  const { userId } = await auth()
-
-  if (!userId) {
-    return null
-  }
-
-  const client = await clerkClient()
-  const users = await client.users.getUserList({
-    username: [username],
-  })
-
-  return users.data[0] || null
 }
 
 // ---- POSTS ----
@@ -96,30 +70,36 @@ export async function getAllPosts() {
   return posts
 }
 
-export async function getPostsByUserId(userId: string) {
+export async function getPostsByUserId(
+  userId: string
+): Promise<PostWithUser[]> {
   const posts = await db.query.Posts.findMany({
     where: eq(Posts.user_id, userId),
+    with: {
+      user: true,
+    },
     orderBy: (posts, { desc }) => [desc(posts.createTs)],
   })
 
   return posts
 }
 
-export async function getFollowingPosts() {
+export async function getFollowingPosts(): Promise<PostWithUser[]> {
   const { userId } = await auth()
   if (!userId) throw new Error('User not found')
 
-  // Get list of users being followed
-  const following = await db.query.Follows.findMany({
-    where: eq(Follows.follower_id, userId),
-  })
-
-  if (following.length === 0) return []
-
-  // Get posts from all followed users using Drizzle's query builder
-  const followeeIds = following.map((f) => f.followee_id)
+  // Get posts from followed users with user information included
   const posts = await db.query.Posts.findMany({
-    where: inArray(Posts.user_id, followeeIds),
+    where: inArray(
+      Posts.user_id,
+      db
+        .select({ id: Follows.followee_id })
+        .from(Follows)
+        .where(eq(Follows.follower_id, userId))
+    ),
+    with: {
+      user: true,
+    },
     orderBy: (posts, { desc }) => [desc(posts.createTs)],
   })
 
@@ -127,37 +107,6 @@ export async function getFollowingPosts() {
 }
 
 // ---- FOLLOWS ----
-export async function getFollowing(userId: string) {
-  // Get all users that userId is following
-  const following = await db.query.Follows.findMany({
-    where: eq(Follows.follower_id, userId),
-  })
-
-  if (following.length === 0) return []
-
-  const users = await getAllUsers()
-  if (!users) return []
-
-  // Filter users list to only include those being followed
-  const followeeIds = following.map((f) => f.followee_id)
-  return users.filter((user) => followeeIds.includes(user.id))
-}
-
-export async function getFollowers(userId: string) {
-  // Get all users that follow userId
-  const followers = await db.query.Follows.findMany({
-    where: eq(Follows.followee_id, userId),
-  })
-
-  if (followers.length === 0) return []
-
-  const users = await getAllUsers()
-  if (!users) return []
-
-  // Filter users list to only include followers
-  const followerIds = followers.map((f) => f.follower_id)
-  return users.filter((user) => followerIds.includes(user.id))
-}
 
 export async function followUser(followeeId: string) {
   const { userId } = await auth()
@@ -196,11 +145,15 @@ export async function likePost(postId: string) {
   const { userId } = await auth()
   if (!userId) throw new Error('User not found')
 
-  // Insert new like
-  await db.insert(Likes).values({
-    post_id: postId,
-    user_id: userId,
-  })
+  // Insert new like and return the like object
+  const [like] = await db
+    .insert(Likes)
+    .values({
+      post_id: postId,
+      user_id: userId,
+    })
+    .returning()
+  return like
 }
 
 export async function unlikePost(postId: string) {
@@ -219,7 +172,14 @@ export async function getPostLikes(postId: string) {
   return likes
 }
 
-// ---- DB USERS ----
+// ---- USERS ----
+export async function getUserByUsername(username: string) {
+  const user = await db.query.Users.findFirst({
+    where: eq(Users.username, username),
+  })
+  return user
+}
+
 export async function createDbUser(
   id: string,
   username: string,
@@ -267,4 +227,49 @@ export async function deleteDbUser(id: string) {
 
   // Finally, delete the user
   await db.delete(Users).where(eq(Users.user_id, id))
+}
+
+export async function getFollowing(userId: string): Promise<User[]> {
+  const following = await db.query.Follows.findMany({
+    where: eq(Follows.follower_id, userId),
+    with: {
+      followee: true, // Include the user being followed
+    },
+  })
+
+  return following.map((f) => f.followee) // Return just the user objects
+}
+
+export async function getFollowers(userId: string): Promise<User[]> {
+  const followers = await db.query.Follows.findMany({
+    where: eq(Follows.followee_id, userId),
+    with: {
+      follower: true, // Include the user who is following
+    },
+  })
+
+  return followers.map((f) => f.follower) // Return just the user objects
+}
+
+export async function getNonFollowedUsers(): Promise<User[]> {
+  const { userId } = await auth()
+  if (!userId) throw new Error('User not found')
+
+  // Get all users except the current user and those they already follow
+  const users = await db.query.Users.findMany({
+    where: and(
+      not(eq(Users.user_id, userId)),
+      not(
+        inArray(
+          Users.user_id,
+          db
+            .select({ id: Follows.followee_id })
+            .from(Follows)
+            .where(eq(Follows.follower_id, userId))
+        )
+      )
+    ),
+  })
+
+  return users
 }

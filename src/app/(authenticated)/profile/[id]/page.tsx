@@ -1,70 +1,69 @@
-import ProfileContent from '@/components/ProfileContent'
+import PersonalProfileContent from '@/components/PersonalProfileContent'
 import { ProfileSkeleton } from '@/components/ProfileSkeleton'
 import {
-  getAllUsers,
   getPostsByUserId,
   getFollowing,
   getFollowers,
+  getUserByUsername,
   getCurrentUser,
-  getPostLikes,
 } from '@/lib/actions'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
-import { Post, User } from '@/lib/types'
+import UserProfileContent from '@/components/UserProfileContent'
 
-// Move all data fetching to a new component
 async function ProfileData({ id }: { id: string }) {
-  const currentUser = await getCurrentUser()
-  const allUsers = await getAllUsers()
-  const user = allUsers?.find((user) => user.username === id)
+  const currUser = await getCurrentUser()
 
-  if (!currentUser || !user || !user.username || !user.imageUrl || !allUsers) {
-    return notFound()
+  // get the user data from the username in the url
+  const user = await getUserByUsername(id)
+  if (!user) {
+    // if this user doesn't exist, return the user not found page
+    notFound()
   }
 
-  // Extract only the necessary properties from currentUser
-  const serializedCurrentUser: User = {
-    id: currentUser.id,
-    username: currentUser.username as string,
-    firstName: currentUser.firstName as string,
-    lastName: currentUser.lastName as string,
-    imageUrl: currentUser.imageUrl as string,
-  }
+  // get the users posts, following, and followers
+  const postsData = getPostsByUserId(user.user_id)
+  const followingData = getFollowing(user.user_id)
+  const followersData = getFollowers(user.user_id)
 
-  let posts: Post[] | null = null
-  const [fetchedPosts, following, followers, postLikes, currentUserFollowing] =
-    await Promise.all([
-      getPostsByUserId(user.id),
-      getFollowing(user.id),
-      getFollowers(user.id),
-      Promise.all(
-        (await getPostsByUserId(user.id))?.map((post) =>
-          getPostLikes(post.post_id)
-        ) ?? []
-      ),
-      getFollowing(currentUser.id),
+  const [posts, following, followers] = await Promise.all([
+    postsData,
+    followingData,
+    followersData,
+  ])
+
+  // if this is the current user's profile, display the personal profile content
+  if (currUser.user_id === user.user_id) {
+    return (
+      <PersonalProfileContent
+        profileUser={user}
+        profilePosts={posts}
+        profileFollowing={following}
+        profileFollowers={followers}
+      />
+    )
+  } else {
+    // if this is not the current user's profile, we need to fetch more information for social features
+    // and then show the user's profile page
+    const currUserFollowingData = getFollowing(currUser.user_id)
+    const currUserFollowersData = getFollowers(currUser.user_id)
+    const [currUserFollowing, currUserFollowers] = await Promise.all([
+      currUserFollowingData,
+      currUserFollowersData,
     ])
-  posts = fetchedPosts
 
-  // Check if current user is following the profile user
-  const isFollowing =
-    currentUserFollowing?.some((f) => f.id === user.id) ?? false
-
-  return (
-    <ProfileContent
-      currentUser={serializedCurrentUser}
-      userId={user.id}
-      username={user.username}
-      firstName={user.firstName}
-      lastName={user.lastName}
-      imageUrl={user.imageUrl}
-      initialPosts={posts}
-      initialFollowing={following}
-      initialFollowers={followers}
-      initialLikes={postLikes.flat()}
-      isFollowing={isFollowing}
-    />
-  )
+    return (
+      <UserProfileContent
+        currentUser={currUser}
+        profileUser={user}
+        profilePosts={posts}
+        profileFollowing={following}
+        profileFollowers={followers}
+        currUserFollowing={currUserFollowing}
+        currUserFollowers={currUserFollowers}
+      />
+    )
+  }
 }
 
 export default async function ProfilePage({

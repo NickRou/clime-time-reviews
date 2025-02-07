@@ -18,7 +18,7 @@ import Image from 'next/image'
 export function AppSidebar({
   username: username,
   ...props
-}: React.ComponentProps<typeof Sidebar> & { username: string | null }) {
+}: React.ComponentProps<typeof Sidebar> & { username: string }) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>

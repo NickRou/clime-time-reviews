@@ -6,6 +6,7 @@ import {
   uuid,
   primaryKey,
 } from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
 
 export const Posts = pgTable('posts', {
   post_id: uuid('post_id').primaryKey().defaultRandom(),
@@ -53,6 +54,42 @@ export const Users = pgTable('users', {
   username: text('username').notNull(),
   first_name: text('first_name').notNull(),
   last_name: text('last_name').notNull(),
-  image_url: text('image_url'),
+  image_url: text('image_url').notNull(),
   createTs: timestamp('create_ts').defaultNow().notNull(),
 })
+
+export const postsRelations = relations(Posts, ({ one }) => ({
+  user: one(Users, {
+    fields: [Posts.user_id],
+    references: [Users.user_id],
+  }),
+}))
+
+export const usersRelations = relations(Users, ({ many }) => ({
+  posts: many(Posts),
+  likes: many(Likes),
+  followedBy: many(Follows, { relationName: 'followee' }),
+  following: many(Follows, { relationName: 'follower' }),
+}))
+
+export const likesRelations = relations(Likes, ({ one }) => ({
+  post: one(Posts, {
+    fields: [Likes.post_id],
+    references: [Posts.post_id],
+  }),
+  user: one(Users, {
+    fields: [Likes.user_id],
+    references: [Users.user_id],
+  }),
+}))
+
+export const followsRelations = relations(Follows, ({ one }) => ({
+  follower: one(Users, {
+    fields: [Follows.follower_id],
+    references: [Users.user_id],
+  }),
+  followee: one(Users, {
+    fields: [Follows.followee_id],
+    references: [Users.user_id],
+  }),
+}))

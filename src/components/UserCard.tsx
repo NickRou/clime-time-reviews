@@ -1,34 +1,33 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { User } from '@/lib/types'
 import Link from 'next/link'
 
 interface UserCardProps {
-  name: string
-  username: string
-  avatar: string
-  showFollowingButton?: boolean
-  isFollowing?: boolean
-  onFollowToggle?: () => void
-  onRemove?: () => void
+  user: User
+  isFollowing: boolean
+  showFollowButton: boolean
+  onFollow: () => void
   showRemoveButton?: boolean
+  onRemove?: () => void
 }
 
 export default function UserCard({
-  name,
-  username,
-  avatar,
-  showFollowingButton = false,
+  user,
   isFollowing,
-  onFollowToggle,
-  onRemove,
+  showFollowButton,
+  onFollow,
   showRemoveButton = false,
+  onRemove,
 }: UserCardProps) {
+  const { username, first_name, last_name, image_url } = user
+  const name = `${first_name} ${last_name}`
   return (
     <div className="flex items-center justify-between p-4">
       <Link href={`/profile/${username}`} className="flex items-center">
         <Avatar className="h-10 w-10">
-          <AvatarImage src={avatar} />
-          <AvatarFallback>{name[0]}</AvatarFallback>
+          <AvatarImage src={image_url} />
+          <AvatarFallback>{name}</AvatarFallback>
         </Avatar>
         <div className="ml-4">
           <p className="text-sm font-medium hover:underline">{name}</p>
@@ -38,18 +37,18 @@ export default function UserCard({
         </div>
       </Link>
       <div className="flex gap-2">
-        {showRemoveButton && (
-          <Button variant="outline" size="sm" onClick={onRemove}>
-            Remove
-          </Button>
-        )}
-        {showFollowingButton && (
+        {showFollowButton && (
           <Button
             variant={isFollowing ? 'outline' : 'default'}
             size="sm"
-            onClick={onFollowToggle}
+            onClick={onFollow}
           >
             {isFollowing ? 'Unfollow' : 'Follow'}
+          </Button>
+        )}
+        {showRemoveButton && (
+          <Button variant="outline" size="sm" onClick={onRemove}>
+            Remove
           </Button>
         )}
       </div>

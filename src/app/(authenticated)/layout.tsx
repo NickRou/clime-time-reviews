@@ -17,14 +17,15 @@ export default function AuthenticatedLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  // configure clerk components with the current nexjs theme
   const { theme } = useTheme()
   const clerkTheme = theme === 'dark' ? dark : undefined
-  const { user } = useUser()
 
-  if (!user) {
+  // wait for the user to be loaded so we can configure profile links correctly
+  const { user } = useUser()
+  if (!user || !user.username) {
     return null
   }
-
   const { username } = user
 
   return (
