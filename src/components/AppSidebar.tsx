@@ -15,17 +15,16 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import Image from 'next/image'
-export function AppSidebar({
-  username: username,
-  ...props
-}: React.ComponentProps<typeof Sidebar> & { username: string }) {
+import Link from 'next/link'
+
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="/home">
+              <Link href="/home">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground">
                   <Image
                     src="/clime-time-logo.png"
@@ -38,7 +37,7 @@ export function AppSidebar({
                   <span className="font-semibold">Clime Time Reviews</span>
                   <span className="">v1.0.4</span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -64,7 +63,7 @@ export function AppSidebar({
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <a href={`/profile/${username}`} className="font-medium">
+                <a href={`/profile`} className="font-medium">
                   <User />
                   Profile
                 </a>
@@ -72,10 +71,7 @@ export function AppSidebar({
               <SidebarMenuSub>
                 <SidebarMenuSubItem>
                   <SidebarMenuSubButton asChild>
-                    <a
-                      href={`/profile/${username}/manage`}
-                      className="font-small"
-                    >
+                    <a href={`/profile/manage`} className="font-small">
                       <FolderKanban />
                       Manage
                     </a>

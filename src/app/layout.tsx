@@ -28,11 +28,7 @@ export default function RootLayout({
           <link rel="icon" href="/clime-time-logo.png" />
         </head>
         <body>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            disableTransitionOnChange
-          >
+          <ThemeProvider attribute="class" defaultTheme="dark">
             {children}
           </ThemeProvider>
         </body>
