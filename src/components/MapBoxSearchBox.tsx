@@ -51,9 +51,10 @@ const MapBoxSearchBox = ({ onLocationSelect }: MapBoxSearchBoxProps) => {
 
   const mapboxTheme = theme === 'dark' ? darkTheme : lightTheme
 
+  const [searchValue, setSearchValue] = useState('')
+
   const handleClear = () => {
-    // Force reset of the SearchBox by remounting it
-    setKey((prev) => prev + 1)
+    setSearchValue('')
     onLocationSelect({
       name: '',
       address: '',
@@ -74,8 +75,6 @@ const MapBoxSearchBox = ({ onLocationSelect }: MapBoxSearchBoxProps) => {
     })
   }
 
-  const [key, setKey] = useState(0)
-
   if (!process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN) {
     throw new Error('Mapbox access token is not set')
   }
@@ -84,7 +83,8 @@ const MapBoxSearchBox = ({ onLocationSelect }: MapBoxSearchBoxProps) => {
     <div>
       {/* @ts-expect-error: Mapbox SearchBox component is not typed */}
       <SearchBox
-        key={key}
+        value={searchValue}
+        onChange={(value: string) => setSearchValue(value)}
         accessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         options={{
           language: 'en',

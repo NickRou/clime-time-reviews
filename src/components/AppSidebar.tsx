@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { FolderKanban, Home, Search, User } from 'lucide-react'
+import { FolderKanban, Home, Search, User, Map } from 'lucide-react'
 
 import {
   Sidebar,
@@ -50,6 +50,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <a href="/home" className="font-medium">
                   <Home />
                   Home
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <a href="/map" className="font-medium">
+                  <Map />
+                  Map
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
