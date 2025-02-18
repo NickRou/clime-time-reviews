@@ -5,6 +5,7 @@ import {
   integer,
   uuid,
   primaryKey,
+  doublePrecision,
 } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
@@ -18,6 +19,8 @@ export const Posts = pgTable('posts', {
   loc_review: integer('loc_review').notNull(),
   loc_content: text('loc_content').notNull(),
   loc_cost: integer('loc_cost').notNull().default(0),
+  loc_longitude: doublePrecision('loc_longitude').notNull(),
+  loc_latitude: doublePrecision('loc_latitude').notNull(),
   createTs: timestamp('create_ts').defaultNow().notNull(),
 })
 

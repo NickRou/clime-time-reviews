@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import Link from 'next/link'
 import { PriceRangeSelect } from './PriceRangeSelect'
 import { StarRating } from './StarRating'
+import MapBoxSearchBox from './MapBoxSearchBox'
 
 export default function CreatePost() {
   const { user } = useUser()
@@ -17,10 +18,28 @@ export default function CreatePost() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [priceRange, setPriceRange] = useState(0)
   const [rating, setRating] = useState(0)
+  const [location, setLocation] = useState({
+    name: '',
+    address: '',
+    latitude: 0,
+    longitude: 0,
+  })
 
   const handleExpand = useCallback(() => {
     setIsExpanded(true)
   }, [])
+
+  const handleLocationSelect = useCallback(
+    (locationData: {
+      name: string
+      address: string
+      latitude: number
+      longitude: number
+    }) => {
+      setLocation(locationData)
+    },
+    []
+  )
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
@@ -32,22 +51,27 @@ export default function CreatePost() {
         const formData = new FormData(form)
         const content = form.locContent.value
         formData.delete('locContent')
+        formData.append('locName', location.name)
+        formData.append('locAddress', location.address)
         formData.append('locContent', content)
         formData.append('locCost', priceRange.toString())
         formData.append('locReview', rating.toString())
+        formData.append('locLatitude', location.latitude.toString())
+        formData.append('locLongitude', location.longitude.toString())
         await createPost(formData)
 
         setIsExpanded(false)
         form.reset()
         setPriceRange(0)
         setRating(0)
+        setLocation({ name: '', address: '', latitude: 0, longitude: 0 })
       } catch (error) {
         console.error('Error creating post:', error)
       } finally {
         setIsSubmitting(false)
       }
     },
-    [priceRange, rating]
+    [priceRange, rating, location]
   )
 
   if (!user) return null
@@ -77,17 +101,22 @@ export default function CreatePost() {
             ) : (
               <>
                 <div className="grid gap-4">
+                  <MapBoxSearchBox onLocationSelect={handleLocationSelect} />
                   <Input
                     name="locName"
+                    value={location.name}
                     placeholder="Location name"
                     className="bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800"
-                    required
+                    readOnly
+                    disabled
                   />
                   <Input
                     name="locAddress"
+                    value={location.address}
                     placeholder="Location address"
                     className="bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800"
-                    required
+                    readOnly
+                    disabled
                   />
                   <div className="space-y-2">
                     <label className="text-sm text-gray-500 dark:text-gray-400">

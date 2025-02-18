@@ -14,6 +14,8 @@ export type Post = {
   loc_review: number
   loc_content: string
   loc_cost: number
+  loc_longitude: number
+  loc_latitude: number
   createTs: Date
 }
 
