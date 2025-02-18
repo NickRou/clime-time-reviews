@@ -82,7 +82,7 @@ const MapBoxSearchBox = ({ onLocationSelect }: MapBoxSearchBoxProps) => {
 
   return (
     <div>
-      {/* @ts-ignore */}
+      {/* @ts-expect-error: Mapbox SearchBox component is not typed */}
       <SearchBox
         key={key}
         accessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
