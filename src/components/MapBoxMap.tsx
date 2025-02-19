@@ -54,8 +54,10 @@ export default function MapBoxMap({ posts }: MapBoxMapProps) {
           latitude={post.loc_latitude}
           color="red"
           popup={new mapboxgl.Popup({
-            maxWidth: '500px',
+            maxWidth: '400px',
             closeButton: false,
+            anchor: 'bottom',
+            offset: [0, -25],
           }).setHTML(
             `
               <div>
