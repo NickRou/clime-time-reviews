@@ -1,10 +1,8 @@
 'use client'
 
 import Map, { Marker, Popup } from 'react-map-gl/mapbox'
-import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { PostWithUser } from '@/lib/types'
-import { renderToString } from 'react-dom/server'
 import MapBoxMapPopup from './MapBoxMapPopup'
 import { useState } from 'react'
 
