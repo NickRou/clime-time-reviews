@@ -21,15 +21,15 @@ export default function GoogleInfoWindowContent({
   const { first_name, last_name, username } = user
 
   return (
-    <Card className="w-full max-w-sm border-0 shadow-none bg-white text-black">
-      <CardContent className="">
+    <Card className="w-full max-w-[280px] sm:max-w-sm border-0 shadow-none bg-white text-black">
+      <CardContent className="p-2 sm:p-6">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center space-x-2">
-            <p className="text-sm font-medium text-gray-900">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <p className="text-xs sm:text-sm font-medium text-gray-900">
               {first_name} {last_name}
             </p>
-            <p className="text-sm text-gray-600">@{username}</p>
-            <span className="text-sm text-gray-600">
+            <p className="text-xs sm:text-sm text-gray-600">@{username}</p>
+            <span className="text-xs sm:text-sm text-gray-600">
               •{' '}
               {new Date(createTs).toLocaleDateString('en-US', {
                 month: 'short',
@@ -38,19 +38,21 @@ export default function GoogleInfoWindowContent({
               })}
             </span>
           </div>
-          <div className="mt-2">
-            <p className="text-sm font-medium text-gray-900">{loc_name}</p>
-            <p className="text-sm text-gray-600">{loc_address}</p>
+          <div className="mt-1.5 sm:mt-2">
+            <p className="text-xs sm:text-sm font-medium text-gray-900">
+              {loc_name}
+            </p>
+            <p className="text-xs sm:text-sm text-gray-600">{loc_address}</p>
             <div className="flex items-center gap-1">
               <StarRating rating={loc_review} />
               {loc_cost > 0 && (
-                <span className="text-sm text-gray-600">
+                <span className="text-xs sm:text-sm text-gray-600">
                   • {'$'.repeat(loc_cost)}
                 </span>
               )}
             </div>
           </div>
-          <p className="text-sm whitespace-pre-wrap text-gray-800">
+          <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm whitespace-pre-wrap text-gray-800">
             {loc_content}
           </p>
         </div>

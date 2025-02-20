@@ -30,7 +30,7 @@ export default function GoogleMap({ posts }: GoogleMapProps) {
 
   const INITIAL_CAMERA = {
     center: initialCenter,
-    zoom: 12,
+    zoom: 0,
   }
 
   const [cameraProps, setCameraProps] = useState<MapCameraProps>(INITIAL_CAMERA)
@@ -49,6 +49,7 @@ export default function GoogleMap({ posts }: GoogleMapProps) {
         fullscreenControl={false}
         className="w-full h-full"
         mapId="reviews-map"
+        gestureHandling={'greedy'} // Improves mobile handling
       >
         {posts.map((post) => (
           <GoogleMarker
