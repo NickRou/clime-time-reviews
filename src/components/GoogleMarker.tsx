@@ -49,7 +49,7 @@ export const GoogleMarker = ({
             </div>
           }
         >
-          <div className="max-h-[60vh] overflow-y-auto">
+          <div>
             {posts.map((post) => (
               <div key={post.post_id} className="border-t border-gray-500 pt-6">
                 <GoogleInfoWindowContent post={post} />
