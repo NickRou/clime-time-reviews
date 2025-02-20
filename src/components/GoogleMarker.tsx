@@ -9,25 +9,20 @@ import GoogleInfoWindowContent from './GoogleInfoWindowContent'
 
 export const GoogleMarker = ({
   position,
-  post,
+  posts,
 }: {
   position: { lat: number; lng: number }
-  post: PostWithUser
+  posts: PostWithUser[]
 }) => {
-  // `markerRef` and `marker` are needed to establish the connection between
-  // the marker and infowindow (if you're using the Marker component, you
-  // can use the `useMarkerRef` hook instead).
   const [markerRef, marker] = useAdvancedMarkerRef()
 
   const [infoWindowShown, setInfoWindowShown] = useState(false)
 
-  // clicking the marker will toggle the infowindow
   const handleMarkerClick = useCallback(
     () => setInfoWindowShown((isShown) => !isShown),
     []
   )
 
-  // if the maps api closes the infowindow, we have to synchronize our state
   const handleClose = useCallback(() => setInfoWindowShown(false), [])
 
   return (
@@ -39,8 +34,28 @@ export const GoogleMarker = ({
       />
 
       {infoWindowShown && (
-        <InfoWindow anchor={marker} onClose={handleClose}>
-          <GoogleInfoWindowContent post={post} />
+        <InfoWindow
+          anchor={marker}
+          onClose={handleClose}
+          maxWidth={300}
+          headerContent={
+            <div className="pl-2 pb-2">
+              <div className="font-semibold text-black">
+                <div>{posts[0].loc_name}</div>
+                <div className="text-xs font-normal text-gray-500">
+                  {posts[0].loc_address}
+                </div>
+              </div>
+            </div>
+          }
+        >
+          <div className="max-h-[60vh] overflow-y-auto">
+            {posts.map((post) => (
+              <div key={post.post_id} className="border-t border-gray-500 pt-6">
+                <GoogleInfoWindowContent post={post} />
+              </div>
+            ))}
+          </div>
         </InfoWindow>
       )}
     </>

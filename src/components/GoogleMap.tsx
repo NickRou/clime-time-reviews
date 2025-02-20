@@ -16,24 +16,30 @@ interface GoogleMapProps {
 export default function GoogleMap({ posts }: GoogleMapProps) {
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
 
-  // Calculate average lat/lng from all posts
-  const initialCenter = posts.length
+  const postsMap: { [key: string]: PostWithUser[] } = {}
+
+  posts.forEach((post) => {
+    const key = `${post.loc_latitude},${post.loc_longitude}`
+    if (!postsMap[key]) {
+      postsMap[key] = [post]
+    } else {
+      postsMap[key].push(post)
+    }
+  })
+
+  // Calculate bounds that contain all markers
+  const defaultBounds = posts.length
     ? {
-        lat:
-          posts.reduce((sum, post) => sum + post.loc_latitude, 0) /
-          posts.length,
-        lng:
-          posts.reduce((sum, post) => sum + post.loc_longitude, 0) /
-          posts.length,
+        east: Math.max(...posts.map((p) => p.loc_longitude)),
+        west: Math.min(...posts.map((p) => p.loc_longitude)),
+        north: Math.max(...posts.map((p) => p.loc_latitude)),
+        south: Math.min(...posts.map((p) => p.loc_latitude)),
+        padding: 20, // Add 20px padding around bounds
       }
-    : { lat: 40.7, lng: -74 } // Default fallback if no posts
+    : undefined
 
-  const INITIAL_CAMERA = {
-    center: initialCenter,
-    zoom: 3,
-  }
+  const [cameraProps, setCameraProps] = useState<MapCameraProps | null>(null)
 
-  const [cameraProps, setCameraProps] = useState<MapCameraProps>(INITIAL_CAMERA)
   const handleCameraChange = useCallback(
     (ev: MapCameraChangedEvent) => setCameraProps(ev.detail),
     []
@@ -43,6 +49,7 @@ export default function GoogleMap({ posts }: GoogleMapProps) {
     <APIProvider apiKey={GOOGLE_MAPS_API_KEY}>
       <Map
         {...cameraProps}
+        defaultBounds={defaultBounds}
         onCameraChanged={handleCameraChange}
         streetViewControl={false}
         mapTypeControl={false}
@@ -51,11 +58,14 @@ export default function GoogleMap({ posts }: GoogleMapProps) {
         mapId="reviews-map"
         gestureHandling={'greedy'} // Improves mobile handling
       >
-        {posts.map((post) => (
+        {Object.entries(postsMap).map(([key, posts]) => (
           <GoogleMarker
-            key={post.post_id}
-            position={{ lat: post.loc_latitude, lng: post.loc_longitude }}
-            post={post}
+            key={key}
+            position={{
+              lat: posts[0].loc_latitude,
+              lng: posts[0].loc_longitude,
+            }}
+            posts={posts}
           />
         ))}
       </Map>
