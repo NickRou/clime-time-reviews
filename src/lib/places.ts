@@ -1,4 +1,6 @@
-const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
+'use server'
+
+const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY!
 
 export async function usePlaceDetails(placeId: string) {
   try {
@@ -6,7 +8,7 @@ export async function usePlaceDetails(placeId: string) {
       `https://maps.googleapis.com/maps/api/place/details/json?` +
         `place_id=${placeId}` +
         `&fields=name,formatted_address,geometry` +
-        `&key=${GOOGLE_MAPS_API_KEY}`,
+        `&key=${GOOGLE_PLACES_API_KEY}`,
       {
         headers: {
           'Content-Type': 'application/json',

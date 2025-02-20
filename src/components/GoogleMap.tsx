@@ -30,7 +30,7 @@ export default function GoogleMap({ posts }: GoogleMapProps) {
 
   const INITIAL_CAMERA = {
     center: initialCenter,
-    zoom: 0,
+    zoom: 3,
   }
 
   const [cameraProps, setCameraProps] = useState<MapCameraProps>(INITIAL_CAMERA)
