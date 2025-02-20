@@ -1,7 +1,7 @@
 import { getFollowingPosts } from '@/lib/actions'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import MapBoxMap from '@/components/MapBoxMap'
+import GoogleMap from '@/components/GoogleMap'
 
 export default async function MapPage() {
   const { userId } = await auth()
@@ -11,8 +11,8 @@ export default async function MapPage() {
   const posts = await getFollowingPosts()
 
   return (
-    <div className="w-full h-screen">
-      <MapBoxMap posts={posts} />
+    <div className="w-full h-[calc(100vh-4rem)]">
+      <GoogleMap posts={posts} />
     </div>
   )
 }

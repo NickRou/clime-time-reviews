@@ -2,11 +2,13 @@ import { Card, CardContent } from '@/components/ui/card'
 import StarRating from '@/components/DisplayStarRating'
 import { PostWithUser } from '@/lib/types'
 
-interface MapBoxMapPopupProps {
+interface GoogleInfoWindowContentProps {
   post: PostWithUser
 }
 
-export default function MapBoxMapPopup({ post }: MapBoxMapPopupProps) {
+export default function GoogleInfoWindowContent({
+  post,
+}: GoogleInfoWindowContentProps) {
   const {
     loc_name,
     loc_address,
@@ -20,7 +22,7 @@ export default function MapBoxMapPopup({ post }: MapBoxMapPopupProps) {
 
   return (
     <Card className="w-full max-w-sm border-0 shadow-none bg-white text-black">
-      <CardContent className="pt-4">
+      <CardContent className="">
         <div className="flex-1 min-w-0">
           <div className="flex items-center space-x-2">
             <p className="text-sm font-medium text-gray-900">
@@ -48,7 +50,7 @@ export default function MapBoxMapPopup({ post }: MapBoxMapPopupProps) {
               )}
             </div>
           </div>
-          <p className="mt-2 text-sm whitespace-pre-wrap text-gray-800">
+          <p className="text-sm whitespace-pre-wrap text-gray-800">
             {loc_content}
           </p>
         </div>

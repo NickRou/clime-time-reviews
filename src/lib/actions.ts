@@ -8,6 +8,7 @@ import { PostWithUser, User } from '@/lib/types'
 import { Follows } from '@/db/schema'
 import { Likes } from '@/db/schema'
 import { Users } from '@/db/schema'
+import { usePlaceDetails } from '@/lib/places'
 
 // ---- CLERK ----
 export async function getCurrentUser(): Promise<User> {
@@ -35,23 +36,17 @@ export async function createPost(formData: FormData) {
   const { userId } = await auth()
   if (!userId) throw new Error('User not found')
 
-  const locName = formData.get('locName') as string
-  const locAddress = formData.get('locAddress') as string
   const locReview = formData.get('locReview') as string
   const locContent = formData.get('locContent') as string
   const locCost = formData.get('locCost') as string
-  const locLongitude = formData.get('locLongitude') as string
-  const locLatitude = formData.get('locLatitude') as string
+  const locPlaceId = formData.get('locPlaceId') as string
 
   await db.insert(Posts).values({
     user_id: userId,
-    loc_name: locName,
-    loc_address: locAddress,
+    loc_place_id: locPlaceId,
     loc_review: parseInt(locReview),
     loc_content: locContent,
     loc_cost: parseInt(locCost),
-    loc_longitude: parseFloat(locLongitude),
-    loc_latitude: parseFloat(locLatitude),
   })
 }
 
@@ -73,7 +68,18 @@ export async function getAllPosts() {
     orderBy: (posts, { desc }) => [desc(posts.createTs)],
   })
 
-  return posts
+  // Fetch and populate place details for each post
+  const postsWithPlaces = await Promise.all(
+    posts.map(async (post) => {
+      const placeDetails = await usePlaceDetails(post.loc_place_id)
+      return {
+        ...post,
+        ...placeDetails,
+      }
+    })
+  )
+
+  return postsWithPlaces
 }
 
 export async function getPostsByUserId(
@@ -87,7 +93,18 @@ export async function getPostsByUserId(
     orderBy: (posts, { desc }) => [desc(posts.createTs)],
   })
 
-  return posts
+  // Fetch and populate place details for each post
+  const postsWithPlaces = await Promise.all(
+    posts.map(async (post) => {
+      const placeDetails = await usePlaceDetails(post.loc_place_id)
+      return {
+        ...post,
+        ...placeDetails,
+      }
+    })
+  )
+
+  return postsWithPlaces
 }
 
 export async function getFollowingPosts(): Promise<PostWithUser[]> {
@@ -109,7 +126,18 @@ export async function getFollowingPosts(): Promise<PostWithUser[]> {
     orderBy: (posts, { desc }) => [desc(posts.createTs)],
   })
 
-  return posts
+  // Fetch and populate place details for each post
+  const postsWithPlaces = await Promise.all(
+    posts.map(async (post) => {
+      const placeDetails = await usePlaceDetails(post.loc_place_id)
+      return {
+        ...post,
+        ...placeDetails,
+      }
+    })
+  )
+
+  return postsWithPlaces
 }
 
 // ---- FOLLOWS ----

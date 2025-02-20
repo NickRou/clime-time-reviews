@@ -5,7 +5,6 @@ import {
   integer,
   uuid,
   primaryKey,
-  doublePrecision,
 } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
@@ -14,13 +13,10 @@ export const Posts = pgTable('posts', {
   user_id: text('user_id')
     .notNull()
     .references(() => Users.user_id),
-  loc_name: text('loc_name').notNull(),
-  loc_address: text('loc_address').notNull(),
+  loc_place_id: text('loc_place_id').notNull(),
   loc_review: integer('loc_review').notNull(),
   loc_content: text('loc_content').notNull(),
   loc_cost: integer('loc_cost').notNull().default(0),
-  loc_longitude: doublePrecision('loc_longitude').notNull(),
-  loc_latitude: doublePrecision('loc_latitude').notNull(),
   createTs: timestamp('create_ts').defaultNow().notNull(),
 })
 
