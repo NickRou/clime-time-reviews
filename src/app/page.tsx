@@ -3,11 +3,22 @@
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs'
+import { SignedIn, SignedOut, SignInButton, useAuth } from '@clerk/nextjs'
 import BackgroundCanvas from '@/components/BackgroundCanvas'
 import Footer from '@/components/Footer'
+import { redirect } from 'next/navigation'
 
 export default function LandingPage() {
+  const { userId, isLoaded } = useAuth()
+
+  if (!isLoaded) {
+    return null
+  }
+
+  if (userId) {
+    redirect('/home')
+  }
+
   return (
     <div className="relative h-screen w-full overflow-hidden">
       <BackgroundCanvas />

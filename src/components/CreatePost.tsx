@@ -99,7 +99,6 @@ export default function CreatePost() {
                     <GoogleAutoComplete
                       onPlaceSelect={(place) => {
                         if (place) {
-                          console.log(place)
                           setReviewState((prev) => ({
                             ...prev,
                             name: place.name || '',

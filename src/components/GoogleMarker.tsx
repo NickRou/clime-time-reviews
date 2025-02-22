@@ -6,6 +6,7 @@ import {
 import { useState, useCallback } from 'react'
 import { PostWithUser } from '@/lib/types'
 import GoogleInfoWindowContent from './GoogleInfoWindowContent'
+import { ScrollArea } from './ui/scroll-area'
 
 export const GoogleMarker = ({
   position,
@@ -49,13 +50,13 @@ export const GoogleMarker = ({
             </div>
           }
         >
-          <div>
+          <ScrollArea className="h-[350px] px-4 py-2">
             {posts.map((post) => (
-              <div key={post.post_id} className="border-t border-gray-500 pt-6">
+              <div key={post.post_id} className="pt-2">
                 <GoogleInfoWindowContent post={post} />
               </div>
             ))}
-          </div>
+          </ScrollArea>
         </InfoWindow>
       )}
     </>
