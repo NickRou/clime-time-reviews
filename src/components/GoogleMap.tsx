@@ -1,13 +1,13 @@
 'use client'
 
 import { PostWithUser } from '@/lib/types'
-import { APIProvider, Map } from '@vis.gl/react-google-maps'
+import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps'
 import {
   MapCameraChangedEvent,
   MapCameraProps,
 } from '@vis.gl/react-google-maps'
-import { useCallback, useState } from 'react'
-import { GoogleMarker } from './GoogleMarker'
+import { useCallback, useMemo, useState } from 'react'
+import LocationCard from './LocationCard'
 
 interface GoogleMapProps {
   posts: PostWithUser[]
@@ -16,16 +16,20 @@ interface GoogleMapProps {
 export default function GoogleMap({ posts }: GoogleMapProps) {
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
 
-  const postsMap: { [key: string]: PostWithUser[] } = {}
+  const postsMap = useMemo(() => {
+    const map: { [key: string]: PostWithUser[] } = {}
 
-  posts.forEach((post) => {
-    const key = `${post.loc_latitude},${post.loc_longitude}`
-    if (!postsMap[key]) {
-      postsMap[key] = [post]
-    } else {
-      postsMap[key].push(post)
-    }
-  })
+    posts.forEach((post) => {
+      const key = `${post.loc_latitude},${post.loc_longitude}`
+      if (!map[key]) {
+        map[key] = [post]
+      } else {
+        map[key].push(post)
+      }
+    })
+
+    return map
+  }, [posts]) // Include 'posts' to avoid exhaustive deps warning
 
   // Calculate bounds that contain all markers
   const defaultBounds = posts.length
@@ -40,13 +44,41 @@ export default function GoogleMap({ posts }: GoogleMapProps) {
 
   const [cameraProps, setCameraProps] = useState<MapCameraProps | null>(null)
 
-  const handleCameraChange = useCallback(
-    (ev: MapCameraChangedEvent) => setCameraProps(ev.detail),
-    []
+  const handleCameraChange = useCallback((ev: MapCameraChangedEvent) => {
+    setCameraProps(ev.detail)
+  }, [])
+
+  // Location card
+  const [isCardVisible, setIsCardVisible] = useState(false)
+  const [cardLocationInfo, setCardLocationInfo] = useState<
+    PostWithUser[] | null
+  >(null)
+
+  const handleMarkerClick = useCallback(
+    (e: google.maps.MapMouseEvent) => {
+      const latLng = e.latLng
+      if (!latLng) return
+      const locationKey = `${latLng.lat()},${latLng.lng()}`
+      const locationPosts = postsMap[locationKey]
+      setIsCardVisible((isCardVisible) => !isCardVisible)
+      setCardLocationInfo(locationPosts)
+    },
+    [postsMap]
   )
+
+  const handleMapClick = useCallback(() => {
+    if (isCardVisible) {
+      setIsCardVisible(false)
+    }
+  }, [isCardVisible])
 
   return (
     <APIProvider apiKey={GOOGLE_MAPS_API_KEY}>
+      <LocationCard
+        posts={cardLocationInfo || []}
+        isVisible={isCardVisible}
+        setIsVisible={setIsCardVisible}
+      />
       <Map
         {...cameraProps}
         defaultBounds={defaultBounds}
@@ -57,15 +89,16 @@ export default function GoogleMap({ posts }: GoogleMapProps) {
         className="w-full h-full"
         mapId="reviews-map"
         gestureHandling={'greedy'} // Improves mobile handling
+        onDrag={handleMapClick}
       >
         {Object.entries(postsMap).map(([key, posts]) => (
-          <GoogleMarker
+          <Marker
             key={key}
             position={{
               lat: posts[0].loc_latitude,
               lng: posts[0].loc_longitude,
             }}
-            posts={posts}
+            onClick={handleMarkerClick}
           />
         ))}
       </Map>
