@@ -132,9 +132,11 @@ export async function getFollowingPosts(): Promise<PostWithUser[]> {
   const postsWithPlaces = await Promise.all(
     posts.map(async (post) => {
       const placeDetails = await usePlaceDetails(post.loc_place_id)
+      const image_urls = await getImageUrls(post.post_id)
       return {
         ...post,
         ...placeDetails,
+        image_urls: image_urls,
       }
     })
   )
