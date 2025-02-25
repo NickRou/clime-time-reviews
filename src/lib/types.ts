@@ -16,6 +16,7 @@ export type Post = {
   loc_cost: number
   loc_longitude: number
   loc_latitude: number
+  image_urls?: string[]
   createTs: Date
 }
 
@@ -26,4 +27,8 @@ export type PostWithUser = Post & {
 export type Like = {
   post_id: string
   user_id: string
+}
+
+export type Image = {
+  image_url: string
 }

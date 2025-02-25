@@ -58,6 +58,15 @@ export const Users = pgTable('users', {
   createTs: timestamp('create_ts').defaultNow().notNull(),
 })
 
+export const Images = pgTable('images', {
+  image_id: uuid('image_id').primaryKey().defaultRandom(),
+  post_id: uuid('post_id')
+    .notNull()
+    .references(() => Posts.post_id),
+  image_url: text('image_url').notNull(),
+  createTs: timestamp('create_ts').defaultNow().notNull(),
+})
+
 export const postsRelations = relations(Posts, ({ one }) => ({
   user: one(Users, {
     fields: [Posts.user_id],

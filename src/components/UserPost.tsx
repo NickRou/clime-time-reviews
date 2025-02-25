@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { PostWithUser, Like } from '@/lib/types'
 import { useEffect, useState } from 'react'
 import { getPostLikes, likePost, unlikePost } from '@/lib/actions'
+import HorizontalScrollImages from './HorizontalScrollImages'
 
 interface UserPostProps {
   post: PostWithUser
@@ -29,6 +30,7 @@ export default function UserPost({
     loc_content,
     loc_cost,
     user,
+    image_urls,
     createTs,
   } = post
   const { username, first_name, last_name, image_url } = user
@@ -102,6 +104,11 @@ export default function UserPost({
               </div>
             </div>
             <p className="mt-2 text-sm whitespace-pre-wrap">{loc_content}</p>
+            {image_urls !== undefined && image_urls.length > 0 && (
+              <div className="pt-4">
+                <HorizontalScrollImages fileUrls={image_urls} />
+              </div>
+            )}
           </div>
         </div>
         {currentUserId !== user.user_id && (

@@ -10,7 +10,10 @@ if (!process.env.DATABASE_URL) {
 export default defineConfig({
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL,
+    url:
+      process.env.NODE_ENV === 'development'
+        ? 'postgres://postgres:postgres@db.localtest.me:5432/main'
+        : process.env.DATABASE_URL,
   },
   schema: './src/db/schema.ts',
 })

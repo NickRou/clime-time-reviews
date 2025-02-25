@@ -7,6 +7,7 @@ const isPublicRoute = createRouteMatcher([
   '/sign-up(.*)',
   '/',
   '/api/webhooks(.*)',
+  '/api/uploadthing(.*)',
 ])
 
 // make all routes protected by default

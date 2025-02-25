@@ -1,7 +1,7 @@
 'use server'
 
 import { auth, currentUser } from '@clerk/nextjs/server'
-import { Posts } from '@/db/schema'
+import { Images, Posts } from '@/db/schema'
 import { db } from '@/db'
 import { eq, and, inArray, not } from 'drizzle-orm'
 import { PostWithUser, User } from '@/lib/types'
@@ -9,6 +9,9 @@ import { Follows } from '@/db/schema'
 import { Likes } from '@/db/schema'
 import { Users } from '@/db/schema'
 import { usePlaceDetails } from '@/lib/places'
+import { UTApi } from 'uploadthing/server'
+
+const utApi = new UTApi()
 
 // ---- CLERK ----
 export async function getCurrentUser(): Promise<User> {
@@ -41,13 +44,18 @@ export async function createPost(formData: FormData) {
   const locCost = formData.get('locCost') as string
   const locPlaceId = formData.get('locPlaceId') as string
 
-  await db.insert(Posts).values({
-    user_id: userId,
-    loc_place_id: locPlaceId,
-    loc_review: parseInt(locReview),
-    loc_content: locContent,
-    loc_cost: parseInt(locCost),
-  })
+  const result = await db
+    .insert(Posts)
+    .values({
+      user_id: userId,
+      loc_place_id: locPlaceId,
+      loc_review: parseInt(locReview),
+      loc_content: locContent,
+      loc_cost: parseInt(locCost),
+    })
+    .returning({ post_id: Posts.post_id })
+
+  return result[0].post_id
 }
 
 export async function deletePost(postId: string) {
@@ -57,29 +65,21 @@ export async function deletePost(postId: string) {
   // Delete all likes associated with the post first
   await db.delete(Likes).where(eq(Likes.post_id, postId))
 
+  // Delete all images associated with the post
+  const deletedImages = await db
+    .delete(Images)
+    .where(eq(Images.post_id, postId))
+    .returning({ image_url: Images.image_url })
+
+  // Delete all images from upload thing
+  await utApi.deleteFiles(
+    deletedImages.map((image) => image.image_url.split('/f/')[1])
+  )
+
   // Then delete the post
   await db
     .delete(Posts)
     .where(and(eq(Posts.user_id, userId), eq(Posts.post_id, postId)))
-}
-
-export async function getAllPosts() {
-  const posts = await db.query.Posts.findMany({
-    orderBy: (posts, { desc }) => [desc(posts.createTs)],
-  })
-
-  // Fetch and populate place details for each post
-  const postsWithPlaces = await Promise.all(
-    posts.map(async (post) => {
-      const placeDetails = await usePlaceDetails(post.loc_place_id)
-      return {
-        ...post,
-        ...placeDetails,
-      }
-    })
-  )
-
-  return postsWithPlaces
 }
 
 export async function getPostsByUserId(
@@ -97,9 +97,11 @@ export async function getPostsByUserId(
   const postsWithPlaces = await Promise.all(
     posts.map(async (post) => {
       const placeDetails = await usePlaceDetails(post.loc_place_id)
+      const image_urls = await getImageUrls(post.post_id)
       return {
         ...post,
         ...placeDetails,
+        image_urls: image_urls,
       }
     })
   )
@@ -306,4 +308,33 @@ export async function getNonFollowedUsers(): Promise<User[]> {
   })
 
   return users
+}
+
+// UPLOAD THING
+export async function createImageUrls(
+  files: { ufsUrl: string }[],
+  post_id: string
+) {
+  const { userId } = await auth()
+  if (!userId) throw new Error('User not found')
+
+  const insertValues = files.map((file) => ({
+    post_id: post_id,
+    image_url: file.ufsUrl,
+  }))
+
+  await db.insert(Images).values(insertValues)
+}
+
+export async function getImageUrls(post_id: string) {
+  const { userId } = await auth()
+  if (!userId) throw new Error('User not found')
+
+  const images = await db.query.Images.findMany({
+    where: eq(Images.post_id, post_id),
+  })
+
+  if (!images) return []
+
+  return images.map((image) => image.image_url)
 }
