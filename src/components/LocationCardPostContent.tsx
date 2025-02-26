@@ -3,7 +3,7 @@ import StarRating from '@/components/DisplayStarRating'
 import { Post } from '@/lib/types'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import Link from 'next/link'
-import HorizontalScrollImages from './HorizontalScrollImages'
+import ImageCarousel from './HorizontalScrollImages'
 
 interface LocationCardPostContentProps {
   post: Post
@@ -60,7 +60,7 @@ export default function LocationCardPostContent({
             <p className="mt-2 text-sm whitespace-pre-wrap">{loc_content}</p>
             {images !== undefined && images.length > 0 && (
               <div className="pt-4">
-                <HorizontalScrollImages
+                <ImageCarousel
                   fileUrls={images.map((image) => image.image_url)}
                 />
               </div>

@@ -19,7 +19,7 @@ import {
 } from 'uploadthing/client'
 
 import { Trash2, Upload } from 'lucide-react'
-import HorizontalScrollImages from './HorizontalScrollImages'
+import ImageCarousel from './HorizontalScrollImages'
 import { ClientUploadedFileData } from 'uploadthing/types'
 import { createImageUrls } from '@/actions/images'
 import { useUploadThing } from '@/lib/uploadthing'
@@ -217,7 +217,7 @@ export default function CreatePost() {
                     />
                     {files.length > 0 ? (
                       <div>
-                        <HorizontalScrollImages fileUrls={fileUrls} />
+                        <ImageCarousel fileUrls={fileUrls} />
                         <button
                           className="flex pt-2 text-gray-500 gap-2"
                           onClick={onFilesDelete}

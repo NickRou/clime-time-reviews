@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { Post, Like } from '@/lib/types'
 import { useEffect, useState } from 'react'
 import { getPostLikes, likePost, unlikePost } from '@/actions/likes'
-import HorizontalScrollImages from './HorizontalScrollImages'
+import ImageCarousel from './HorizontalScrollImages'
 
 interface UserPostProps {
   post: Post
@@ -106,7 +106,7 @@ export default function UserPost({
             <p className="mt-2 text-sm whitespace-pre-wrap">{loc_content}</p>
             {images !== undefined && images.length > 0 && (
               <div className="pt-4">
-                <HorizontalScrollImages
+                <ImageCarousel
                   fileUrls={images.map((image) => image.image_url)}
                 />
               </div>

@@ -1,32 +1,37 @@
 import * as React from 'react'
 import Image from 'next/image'
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from './ui/carousel'
+import { AspectRatio } from './ui/aspect-ratio'
 
-interface HorizontalScrollImagesProps {
+interface ImageCarouselProps {
   fileUrls: string[]
 }
 
-export default function HorizontalScrollImages({
-  fileUrls,
-}: HorizontalScrollImagesProps) {
+export default function ImageCarousel({ fileUrls }: ImageCarouselProps) {
   return (
-    <ScrollArea className="w-full rounded-md border">
-      <div className="flex snap-x snap-mandatory overflow-x-auto">
-        {fileUrls.map((fileUrl, index) => (
-          <figure key={fileUrl} className="shrink-0 snap-center">
-            <div className="overflow-hidden">
+    <Carousel className="w-full">
+      <CarouselContent>
+        {fileUrls.map((src, index) => (
+          <CarouselItem key={index}>
+            <AspectRatio ratio={4 / 3} className="bg-muted rounded-lg">
               <Image
-                src={fileUrl || '/placeholder.svg'}
-                alt={`Uploaded image ${index + 1}`}
-                className="aspect-square h-[300px] w-[300px] object-cover"
-                width={300}
-                height={300}
+                src={src}
+                alt={`Image ${index + 1}`}
+                fill
+                className="rounded-lg object-contain"
               />
-            </div>
-          </figure>
+            </AspectRatio>
+          </CarouselItem>
         ))}
-      </div>
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
+      </CarouselContent>
+      <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2" />
+      <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2" />
+    </Carousel>
   )
 }
