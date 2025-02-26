@@ -1,11 +1,10 @@
 import { redirect } from 'next/navigation'
-import { Separator } from '@/components/ui/separator'
-import { Fragment } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import CreatePost from '@/components/CreatePost'
 import { auth } from '@clerk/nextjs/server'
-import { getFollowingPosts } from '@/actions/posts'
-import UserPost from '@/components/UserPost'
+import { UserPostFeed } from './_components/UserPostFeed'
+import { Suspense } from 'react'
+import { SkeletonUserPostFeed } from './_components/SkeletonUserPostFeed'
 
 export default async function HomePage() {
   // auth current user
@@ -13,9 +12,6 @@ export default async function HomePage() {
   if (!userId) {
     return redirect('/')
   }
-
-  // gets posts form all users the current user follows
-  const posts = await getFollowingPosts()
 
   return (
     <div className="container mx-auto max-w-3xl px-4 py-8">
@@ -26,14 +22,9 @@ export default async function HomePage() {
         <TabsContent value="for-you">
           <div className="grid max-w-3xl mx-auto">
             <CreatePost />
-            {posts.map((post, index) => {
-              return (
-                <Fragment key={post.post_id}>
-                  <UserPost post={post} currentUserId={userId} />
-                  {index < posts.length && <Separator />}
-                </Fragment>
-              )
-            })}
+            <Suspense fallback={<SkeletonUserPostFeed />}>
+              <UserPostFeed currentUserId={userId} />
+            </Suspense>
           </div>
         </TabsContent>
       </Tabs>

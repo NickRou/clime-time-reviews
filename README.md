@@ -14,18 +14,5 @@ You can find the website at: https://www.climetimereviews.com
 - Clerk (authentication)
 - Vercel (hosting)
 - ngrok (local webhook testing)
-
-## Local Development
-
-```
-npm install
-npm run dev
-```
-
-## Building
-
-```
-npm install
-npm run build
-npm start
-```
+- Google Maps Platform (map, autocomplete, place details)
+- UploadThing (file uploads)
