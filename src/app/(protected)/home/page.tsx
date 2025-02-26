@@ -4,7 +4,7 @@ import CreatePost from '@/components/CreatePost'
 import { auth } from '@clerk/nextjs/server'
 import { UserPostFeed } from './_components/UserPostFeed'
 import { Suspense } from 'react'
-import { SkeletonUserPostFeed } from './_components/SkeletonUserPostFeed'
+import { LoadingRing } from './_components/LoadingRing'
 
 export default async function HomePage() {
   // auth current user
@@ -22,7 +22,7 @@ export default async function HomePage() {
         <TabsContent value="for-you">
           <div className="grid max-w-3xl mx-auto">
             <CreatePost />
-            <Suspense fallback={<SkeletonUserPostFeed />}>
+            <Suspense fallback={<LoadingRing />}>
               <UserPostFeed currentUserId={userId} />
             </Suspense>
           </div>
