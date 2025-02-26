@@ -9,18 +9,14 @@ import { Separator } from '@/components/ui/separator'
 import { UserPlus, Users } from 'lucide-react'
 import UserCard from '@/components/UserCard'
 import Link from 'next/link'
-import {
-  unfollowUser,
-  followUser,
-  removeFollower,
-  deletePost,
-} from '@/lib/actions'
-import { PostWithUser, User } from '@/lib/types'
+import { Post, User } from '@/lib/types'
 import UserPost from './UserPost'
+import { followUser, removeFollower, unfollowUser } from '@/actions/follows'
+import { deletePost } from '@/actions/posts'
 
 interface PersonalProfileContentProps {
   profileUser: User
-  profilePosts: PostWithUser[]
+  profilePosts: Post[]
   profileFollowing: User[]
   profileFollowers: User[]
 }
@@ -32,7 +28,7 @@ export default function PersonalProfileContent({
   profileFollowers,
 }: PersonalProfileContentProps) {
   const { user_id, username, first_name, last_name, image_url } = profileUser
-  const [posts, setPosts] = useState<PostWithUser[]>(profilePosts)
+  const [posts, setPosts] = useState<Post[]>(profilePosts)
   const [following, setFollowing] = useState<User[]>(profileFollowing)
   const [followers, setFollowers] = useState<User[]>(profileFollowers)
 

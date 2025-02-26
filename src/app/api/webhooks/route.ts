@@ -1,7 +1,7 @@
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { UserJSON, WebhookEvent } from '@clerk/nextjs/server'
-import { createDbUser, deleteDbUser, updateDbUser } from '@/lib/actions'
+import { createDbUser, deleteDbUser, updateDbUser } from '@/actions/users'
 
 export async function POST(req: Request) {
   const SIGNING_SECRET = process.env.SIGNING_SECRET
@@ -59,14 +59,27 @@ export async function POST(req: Request) {
         status: 400,
       })
     }
-    await createDbUser(id, username, first_name, last_name, image_url)
+    await createDbUser({
+      user_id: id,
+      username,
+      first_name,
+      last_name,
+      image_url,
+    })
   } else if (eventType === 'user.updated') {
     if (!id || !username || !first_name || !last_name || !image_url) {
       return new Response('Error: User data is missing', {
         status: 400,
       })
     }
-    await updateDbUser(id, username, first_name, last_name, image_url)
+
+    await updateDbUser({
+      user_id: id,
+      username,
+      first_name,
+      last_name,
+      image_url,
+    })
   } else if (eventType === 'user.deleted') {
     await deleteDbUser(id)
   }

@@ -48,7 +48,7 @@ export default function LandingPage() {
             </SignedIn>
             <SignedOut>
               <SignInButton>
-                <Button>Get Started</Button>
+                <Button>Sign In</Button>
               </SignInButton>
             </SignedOut>
           </div>

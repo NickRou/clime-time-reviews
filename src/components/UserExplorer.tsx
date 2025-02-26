@@ -1,6 +1,6 @@
 'use client'
 
-import { followUser } from '@/lib/actions'
+import { followUser } from '@/actions/follows'
 import UserCard from '@/components/UserCard'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'

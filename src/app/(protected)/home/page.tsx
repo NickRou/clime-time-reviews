@@ -4,14 +4,17 @@ import { Fragment } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import CreatePost from '@/components/CreatePost'
 import { auth } from '@clerk/nextjs/server'
-import { getFollowingPosts } from '@/lib/actions'
+import { getFollowingPosts } from '@/actions/posts'
 import UserPost from '@/components/UserPost'
 
 export default async function HomePage() {
+  // auth current user
   const { userId } = await auth()
   if (!userId) {
     return redirect('/')
   }
+
+  // gets posts form all users the current user follows
   const posts = await getFollowingPosts()
 
   return (

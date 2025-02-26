@@ -5,7 +5,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { Button } from './ui/button'
 import { Textarea } from './ui/textarea'
 import { Input } from './ui/input'
-import { createImageUrls, createPost } from '@/lib/actions'
+import { createPost } from '@/actions/posts'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import Link from 'next/link'
 import { PriceRangeSelect } from './PriceRangeSelect'
@@ -18,10 +18,11 @@ import {
   generatePermittedFileTypes,
 } from 'uploadthing/client'
 
-import { useUploadThing } from '@/utils/uploadthing'
 import { Trash2, Upload } from 'lucide-react'
 import HorizontalScrollImages from './HorizontalScrollImages'
 import { ClientUploadedFileData } from 'uploadthing/types'
+import { createImageUrls } from '@/actions/images'
+import { useUploadThing } from '@/lib/uploadthing'
 
 export default function CreatePost() {
   const { user } = useUser()

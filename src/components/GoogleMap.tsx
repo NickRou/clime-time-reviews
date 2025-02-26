@@ -1,6 +1,6 @@
 'use client'
 
-import { PostWithUser } from '@/lib/types'
+import { Post } from '@/lib/types'
 import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps'
 import {
   MapCameraChangedEvent,
@@ -10,14 +10,14 @@ import { useCallback, useMemo, useState } from 'react'
 import LocationCard from './LocationCard'
 
 interface GoogleMapProps {
-  posts: PostWithUser[]
+  posts: Post[]
 }
 
 export default function GoogleMap({ posts }: GoogleMapProps) {
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
 
   const postsMap = useMemo(() => {
-    const map: { [key: string]: PostWithUser[] } = {}
+    const map: { [key: string]: Post[] } = {}
 
     posts.forEach((post) => {
       const key = `${post.loc_latitude},${post.loc_longitude}`
@@ -50,9 +50,7 @@ export default function GoogleMap({ posts }: GoogleMapProps) {
 
   // Location card
   const [isCardVisible, setIsCardVisible] = useState(false)
-  const [cardLocationInfo, setCardLocationInfo] = useState<
-    PostWithUser[] | null
-  >(null)
+  const [cardLocationInfo, setCardLocationInfo] = useState<Post[] | null>(null)
 
   const handleMarkerClick = useCallback(
     (e: google.maps.MapMouseEvent) => {

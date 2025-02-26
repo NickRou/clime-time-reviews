@@ -8,14 +8,14 @@ import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { UserPlus, Users } from 'lucide-react'
 import UserCard from '@/components/UserCard'
-import { unfollowUser, followUser } from '@/lib/actions'
-import { PostWithUser, User } from '@/lib/types'
+import { unfollowUser, followUser } from '@/actions/follows'
+import { Post, User } from '@/lib/types'
 import UserPost from './UserPost'
 
 interface UserProfileContentProps {
   currentUser: User
   profileUser: User
-  profilePosts: PostWithUser[]
+  profilePosts: Post[]
   profileFollowing: User[]
   profileFollowers: User[]
   currUserFollowing: User[]
@@ -32,7 +32,7 @@ export default function UserProfileContent({
   currUserFollowers,
 }: UserProfileContentProps) {
   const { username, first_name, last_name, image_url } = profileUser
-  const [posts] = useState<PostWithUser[]>(profilePosts)
+  const [posts] = useState<Post[]>(profilePosts)
   const [following] = useState<User[]>(profileFollowing)
   const [followers, setFollowers] = useState<User[]>(profileFollowers)
   const [currFollowing, setCurrFollowing] = useState<User[]>(currUserFollowing)

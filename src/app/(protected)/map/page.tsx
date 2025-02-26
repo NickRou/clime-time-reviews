@@ -1,7 +1,7 @@
-import { getFollowingPosts } from '@/lib/actions'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import GoogleMap from '@/components/GoogleMap'
+import { getFollowingPosts } from '@/actions/posts'
 
 export default async function MapPage() {
   const { userId } = await auth()

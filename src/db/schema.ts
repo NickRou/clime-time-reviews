@@ -64,14 +64,29 @@ export const Images = pgTable('images', {
     .notNull()
     .references(() => Posts.post_id),
   image_url: text('image_url').notNull(),
+  user_id: text('user_id')
+    .notNull()
+    .references(() => Users.user_id),
   createTs: timestamp('create_ts').defaultNow().notNull(),
 })
 
-export const postsRelations = relations(Posts, ({ one }) => ({
+export const imagesRelations = relations(Images, ({ one }) => ({
+  post: one(Posts, {
+    fields: [Images.post_id],
+    references: [Posts.post_id],
+  }),
+  user: one(Users, {
+    fields: [Images.user_id],
+    references: [Users.user_id],
+  }),
+}))
+
+export const postsRelations = relations(Posts, ({ one, many }) => ({
   user: one(Users, {
     fields: [Posts.user_id],
     references: [Users.user_id],
   }),
+  images: many(Images),
 }))
 
 export const usersRelations = relations(Users, ({ many }) => ({

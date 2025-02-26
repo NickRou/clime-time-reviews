@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button'
 import { Heart, Trash2 } from 'lucide-react'
 import StarRating from '@/components/DisplayStarRating'
 import Link from 'next/link'
-import { PostWithUser, Like } from '@/lib/types'
+import { Post, Like } from '@/lib/types'
 import { useEffect, useState } from 'react'
-import { getPostLikes, likePost, unlikePost } from '@/lib/actions'
+import { getPostLikes, likePost, unlikePost } from '@/actions/likes'
 import HorizontalScrollImages from './HorizontalScrollImages'
 
 interface UserPostProps {
-  post: PostWithUser
+  post: Post
   currentUserId: string
   onDelete?: (postId: string) => Promise<void>
 }
@@ -30,7 +30,7 @@ export default function UserPost({
     loc_content,
     loc_cost,
     user,
-    image_urls,
+    images,
     createTs,
   } = post
   const { username, first_name, last_name, image_url } = user
@@ -104,9 +104,11 @@ export default function UserPost({
               </div>
             </div>
             <p className="mt-2 text-sm whitespace-pre-wrap">{loc_content}</p>
-            {image_urls !== undefined && image_urls.length > 0 && (
+            {images !== undefined && images.length > 0 && (
               <div className="pt-4">
-                <HorizontalScrollImages fileUrls={image_urls} />
+                <HorizontalScrollImages
+                  fileUrls={images.map((image) => image.image_url)}
+                />
               </div>
             )}
           </div>

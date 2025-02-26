@@ -1,18 +1,14 @@
 import PersonalProfileContent from '@/components/PersonalProfileContent'
 import { ProfileSkeleton } from '@/components/ProfileSkeleton'
-import {
-  getPostsByUserId,
-  getFollowing,
-  getFollowers,
-  getUserByUsername,
-  getCurrentUser,
-} from '@/lib/actions'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import UserProfileContent from '@/components/UserProfileContent'
+import { getFollowers, getFollowing, getUserByUsername } from '@/actions/users'
+import { getCurrentUserAsUserType } from '@/actions/clerk'
+import { getPostsByUserId } from '@/actions/posts'
 
 async function ProfileData({ id }: { id: string }) {
-  const currUser = await getCurrentUser()
+  const currUser = await getCurrentUserAsUserType()
 
   // get the user data from the username in the url
   const user = await getUserByUsername(id)

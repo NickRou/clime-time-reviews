@@ -8,6 +8,7 @@ const lato = Lato({
   weight: ['300', '400', '700'], // 300: secondary, 400: body, 700: heading
   display: 'swap',
   subsets: ['latin'],
+  preload: true,
 })
 
 export const metadata: Metadata = {

@@ -1,18 +1,18 @@
 import { Card, CardContent } from '@/components/ui/card'
 import StarRating from '@/components/DisplayStarRating'
-import { PostWithUser } from '@/lib/types'
+import { Post } from '@/lib/types'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import Link from 'next/link'
 import HorizontalScrollImages from './HorizontalScrollImages'
 
 interface LocationCardPostContentProps {
-  post: PostWithUser
+  post: Post
 }
 
 export default function LocationCardPostContent({
   post,
 }: LocationCardPostContentProps) {
-  const { loc_review, loc_content, loc_cost, user, image_urls, createTs } = post
+  const { loc_review, loc_content, loc_cost, user, images, createTs } = post
   const { first_name, last_name, username, image_url } = user
 
   return (
@@ -58,9 +58,11 @@ export default function LocationCardPostContent({
               </div>
             </div>
             <p className="mt-2 text-sm whitespace-pre-wrap">{loc_content}</p>
-            {image_urls !== undefined && image_urls.length > 0 && (
+            {images !== undefined && images.length > 0 && (
               <div className="pt-4">
-                <HorizontalScrollImages fileUrls={image_urls} />
+                <HorizontalScrollImages
+                  fileUrls={images.map((image) => image.image_url)}
+                />
               </div>
             )}
           </div>
