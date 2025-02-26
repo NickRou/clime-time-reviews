@@ -25,6 +25,7 @@ export default function ImageCarousel({ fileUrls }: ImageCarouselProps) {
                 alt={`Image ${index + 1}`}
                 fill
                 className="rounded-lg object-contain"
+                loading="eager"
               />
             </AspectRatio>
           </CarouselItem>
