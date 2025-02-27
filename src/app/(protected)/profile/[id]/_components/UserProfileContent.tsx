@@ -7,10 +7,10 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { UserPlus, Users } from 'lucide-react'
-import UserCard from '@/components/UserCard'
+import UserCard from '@/app/(protected)/_components/UserCard'
 import { unfollowUser, followUser } from '@/actions/follows'
 import { Post, User } from '@/lib/types'
-import UserPost from './UserPost'
+import UserPost from '../../../_components/UserPost'
 
 interface UserProfileContentProps {
   currentUser: User

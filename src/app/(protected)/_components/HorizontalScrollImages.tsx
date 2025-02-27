@@ -6,8 +6,8 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from './ui/carousel'
-import { AspectRatio } from './ui/aspect-ratio'
+} from '../../../components/ui/carousel'
+import { AspectRatio } from '../../../components/ui/aspect-ratio'
 
 interface ImageCarouselProps {
   fileUrls: string[]

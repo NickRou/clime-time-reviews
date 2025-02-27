@@ -1,6 +1,6 @@
 import { getFollowingPosts } from '@/actions/posts'
 import { Separator } from '@/components/ui/separator'
-import UserPost from '@/components/UserPost'
+import UserPost from '@/app/(protected)/_components/UserPost'
 import { Fragment } from 'react'
 
 interface UserPostFeedProps {

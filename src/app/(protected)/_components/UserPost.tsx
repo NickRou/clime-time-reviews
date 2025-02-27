@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Heart, Trash2 } from 'lucide-react'
-import StarRating from '@/components/DisplayStarRating'
+import StarRating from '@/app/(protected)/_components/DisplayStarRating'
 import Link from 'next/link'
 import { Post, Like } from '@/lib/types'
 import { useEffect, useState } from 'react'
@@ -65,7 +65,11 @@ export default function UserPost({
         <div className="flex items-start space-x-4">
           <Link href={`/profile/${username}`}>
             <Avatar>
-              <AvatarImage src={image_url} alt={`${first_name} ${last_name}`} />
+              <AvatarImage
+                src={image_url}
+                alt={`${first_name} ${last_name}`}
+                className="object-cover w-full h-full"
+              />
               <AvatarFallback>
                 {first_name.charAt(0)}
                 {last_name.charAt(0)}

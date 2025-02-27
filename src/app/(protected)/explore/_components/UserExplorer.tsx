@@ -1,7 +1,7 @@
 'use client'
 
 import { followUser } from '@/actions/follows'
-import UserCard from '@/components/UserCard'
+import UserCard from '@/app/(protected)/_components/UserCard'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { useState } from 'react'

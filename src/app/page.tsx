@@ -4,8 +4,8 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { SignedIn, SignedOut, SignInButton, useAuth } from '@clerk/nextjs'
-import BackgroundCanvas from '@/components/BackgroundCanvas'
-import Footer from '@/components/Footer'
+import BackgroundCanvas from '@/app/_components/BackgroundCanvas'
+import Footer from '@/app/_components/Footer'
 import { redirect } from 'next/navigation'
 
 export default function LandingPage() {

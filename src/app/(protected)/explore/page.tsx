@@ -1,5 +1,5 @@
 import { getNonFollowedUsers } from '@/actions/users'
-import UserExplorer from '@/components/UserExplorer'
+import UserExplorer from '@/app/(protected)/explore/_components/UserExplorer'
 
 export default async function ExplorePage() {
   const usersNotFollowing = await getNonFollowedUsers()

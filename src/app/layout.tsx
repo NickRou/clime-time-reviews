@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Lato } from 'next/font/google'
 import './globals.css'
 import { ClerkProvider } from '@clerk/nextjs'
-import { ThemeProvider } from '@/components/ThemeProvider'
+import { ThemeProvider } from '@/app/_components/ThemeProvider'
 
 const lato = Lato({
   weight: ['300', '400', '700'], // 300: secondary, 400: body, 700: heading

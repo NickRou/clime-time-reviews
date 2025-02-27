@@ -2,7 +2,7 @@ import { useTheme } from 'next-themes'
 import { dark } from '@clerk/themes'
 import { useUser } from '@clerk/nextjs'
 import { UserButton } from '@clerk/nextjs'
-import { Skeleton } from './ui/skeleton'
+import { Skeleton } from '../../../components/ui/skeleton'
 
 export default function HeaderUserButton() {
   const { theme } = useTheme()

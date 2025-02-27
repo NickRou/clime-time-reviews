@@ -1,6 +1,6 @@
-import BackgroundCanvas from '@/components/BackgroundCanvas'
+import BackgroundCanvas from '@/app/_components/BackgroundCanvas'
 import { SignUp } from '@clerk/nextjs'
-import Footer from '@/components/Footer'
+import Footer from '@/app/_components/Footer'
 import { dark } from '@clerk/themes'
 
 export default function Page() {

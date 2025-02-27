@@ -1,7 +1,7 @@
 'use client'
 
 import { ThemeToggle } from './ThemeToggle'
-import { SidebarTrigger } from './ui/sidebar'
+import { SidebarTrigger } from '../../../components/ui/sidebar'
 import HeaderUserButton from './HeaderUserButton'
 
 export default function Header() {

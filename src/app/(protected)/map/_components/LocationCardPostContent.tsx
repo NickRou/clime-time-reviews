@@ -1,9 +1,13 @@
 import { Card, CardContent } from '@/components/ui/card'
-import StarRating from '@/components/DisplayStarRating'
+import StarRating from '@/app/(protected)/_components/DisplayStarRating'
 import { Post } from '@/lib/types'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '../../../../components/ui/avatar'
 import Link from 'next/link'
-import ImageCarousel from './HorizontalScrollImages'
+import ImageCarousel from '../../_components/HorizontalScrollImages'
 
 interface LocationCardPostContentProps {
   post: Post

@@ -2,11 +2,15 @@
 
 import { useUser } from '@clerk/nextjs'
 import { useState, useCallback, useEffect } from 'react'
-import { Button } from './ui/button'
-import { Textarea } from './ui/textarea'
-import { Input } from './ui/input'
+import { Button } from '../../../../components/ui/button'
+import { Textarea } from '../../../../components/ui/textarea'
+import { Input } from '../../../../components/ui/input'
 import { createPost } from '@/actions/posts'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '../../../../components/ui/avatar'
 import Link from 'next/link'
 import { PriceRangeSelect } from './PriceRangeSelect'
 import { StarRating } from './StarRating'
@@ -19,7 +23,7 @@ import {
 } from 'uploadthing/client'
 
 import { Trash2, Upload } from 'lucide-react'
-import ImageCarousel from './HorizontalScrollImages'
+import ImageCarousel from '../../_components/HorizontalScrollImages'
 import { ClientUploadedFileData } from 'uploadthing/types'
 import { createImageUrls } from '@/actions/images'
 import { useUploadThing } from '@/lib/uploadthing'
@@ -84,7 +88,7 @@ export default function CreatePost() {
             }>[]
           | undefined = await startUpload(files)
 
-        if (uploadedFiles) {
+        if (uploadedFiles && uploadedFiles.length > 0) {
           await createImageUrls(uploadedFiles, post_id)
         }
 
@@ -142,6 +146,7 @@ export default function CreatePost() {
                       <AvatarImage
                         src={user.imageUrl}
                         alt={user.username ?? ''}
+                        className="object-cover w-full h-full"
                       />
                       <AvatarFallback>
                         {user.firstName?.charAt(0)}
@@ -246,7 +251,12 @@ export default function CreatePost() {
                   <div className="flex justify-end pt-2">
                     <Button
                       type="submit"
-                      disabled={isSubmitting}
+                      disabled={
+                        isSubmitting ||
+                        reviewState.address === '' ||
+                        reviewState.name === '' ||
+                        reviewState.place_id === ''
+                      }
                       className="px-6"
                     >
                       {isSubmitting ? 'Posting...' : 'Post'}

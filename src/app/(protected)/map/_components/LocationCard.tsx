@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { X } from 'lucide-react'
 import { Post } from '@/lib/types'
-import { ScrollArea } from './ui/scroll-area'
+import { ScrollArea } from '../../../../components/ui/scroll-area'
 import LocationCardPostContent from './LocationCardPostContent'
 
 interface LocationCardProps {

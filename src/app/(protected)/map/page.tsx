@@ -1,6 +1,6 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import GoogleMap from '@/components/GoogleMap'
+import GoogleMap from '@/app/(protected)/map/_components/GoogleMap'
 import { getFollowingPosts } from '@/actions/posts'
 
 export default async function MapPage() {

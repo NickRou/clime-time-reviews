@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import CreatePost from '@/components/CreatePost'
+import CreatePost from '@/app/(protected)/home/_components/CreatePost'
 import { auth } from '@clerk/nextjs/server'
 import { UserPostFeed } from './_components/UserPostFeed'
 import { Suspense } from 'react'
