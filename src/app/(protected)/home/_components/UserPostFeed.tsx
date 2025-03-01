@@ -15,6 +15,7 @@ export async function UserPostFeed({ currentUserId }: UserPostFeedProps) {
       {posts.map((post, index) => {
         return (
           <Fragment key={post.post_id}>
+            {index == 0 && <Separator />}
             <UserPost post={post} currentUserId={currentUserId} />
             {index < posts.length && <Separator />}
           </Fragment>

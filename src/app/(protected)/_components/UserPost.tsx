@@ -79,14 +79,14 @@ export default function UserPost({
           <div className="flex-1 min-w-0">
             <div className="flex items-center space-x-2">
               <Link href={`/profile/${username}`} className="hover:underline">
-                <p className="text-sm font-medium">
+                <p className="text-base font-medium">
                   {first_name} {last_name}
                 </p>
               </Link>
               <Link href={`/profile/${username}`} className="hover:underline">
                 <p className="text-sm text-muted-foreground">@{username}</p>
               </Link>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-base text-muted-foreground">
                 •{' '}
                 {new Date(createTs).toLocaleDateString('en-US', {
                   month: 'short',
@@ -96,8 +96,8 @@ export default function UserPost({
               </span>
             </div>
             <div className="mt-4">
-              <p className="text-sm font-medium">{loc_name}</p>
-              <p className="text-sm text-muted-foreground">{loc_address}</p>
+              <p className="text-base font-medium">{loc_name}</p>
+              <p className="text-base text-muted-foreground">{loc_address}</p>
               <div className="flex items-center gap-1">
                 <StarRating rating={loc_review} />
                 {loc_cost > 0 && (
@@ -120,9 +120,9 @@ export default function UserPost({
         {currentUserId !== user.user_id && (
           <div className="mt-4 flex justify-end">
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
-              className="text-muted-foreground hover:text-primary"
+              className="text-muted-foreground hover:text-primary rounded-full"
               onClick={() => onLikeToggle(post_id)}
             >
               <Heart

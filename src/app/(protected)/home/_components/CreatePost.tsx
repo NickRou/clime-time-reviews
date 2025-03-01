@@ -135,12 +135,12 @@ export default function CreatePost() {
 
   return (
     <APIProvider apiKey={GOOGLE_MAPS_API_KEY}>
-      <div className="w-full p-6 bg-white dark:bg-gray-950 border dark:border-gray-800 rounded-xl shadow-sm">
+      <div className="rounded-lg bg-card text-card-foreground w-full max-w-3xl border-0 shadow-none">
         <form onSubmit={handleSubmit}>
           <div className="flex gap-4">
             <div className="flex-1 space-y-4">
               {!isExpanded ? (
-                <div className="flex gap-4">
+                <div className="flex gap-4 pl-2">
                   <Link href={`/profile/${user.username}`}>
                     <Avatar className="h-10 w-10">
                       <AvatarImage
@@ -156,7 +156,7 @@ export default function CreatePost() {
                   </Link>
                   <div
                     onClick={handleExpand}
-                    className="w-full cursor-pointer p-3 rounded-lg bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors"
+                    className="w-full cursor-pointer p-3 rounded-lg bg-gray-200 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors"
                   >
                     Write a review!
                   </div>

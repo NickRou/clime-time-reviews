@@ -1,10 +1,11 @@
+'use client'
+
 import * as React from 'react'
 import { FolderKanban, Home, Search, User, Map } from 'lucide-react'
 
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -13,82 +14,72 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarRail,
+  SidebarTrigger,
 } from '@/components/ui/sidebar'
+import { useTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
+
+const navItems = [
+  { name: 'Home', icon: Home, href: '/home' },
+  { name: 'Map', icon: Map, href: '/map' },
+  { name: 'Find Users', icon: Search, href: '/explore' },
+  {
+    name: 'Profile',
+    icon: User,
+    href: '/profile',
+    items: [{ name: 'Manage', icon: FolderKanban, href: '/profile/manage' }],
+  },
+]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { theme } = useTheme()
+  const [logoSrc, setLogoSrc] = useState<string>('/logo-white-text.png')
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      setLogoSrc('/logo-white-text.png')
+    } else {
+      setLogoSrc('/logo-black-text.png')
+    }
+  }, [theme])
+
   return (
-    <Sidebar {...props}>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <Link href="/home">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground">
-                  <Image
-                    src="/clime-time-logo.png"
-                    alt="Clime Time Logo"
-                    width={32}
-                    height={32}
-                  />
-                </div>
-                <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">Clime Time Reviews</span>
-                  <span className="">v1.2.0</span>
-                </div>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+    <Sidebar
+      className="top-[--header-height] !h-[calc(100svh-var(--header-height))]"
+      {...props}
+    >
+      <SidebarHeader className="flex flex-row items-center justify-between md:hidden">
+        <Image src={logoSrc} alt="Clime Time Reviews" width={112} height={50} />
+        <SidebarTrigger />
       </SidebarHeader>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <a href="/home" className="font-medium">
-                  <Home />
-                  Home
+      <SidebarContent className="pl-1">
+        <SidebarMenu>
+          {navItems.map((item) => (
+            <SidebarMenuItem key={item.name}>
+              <SidebarMenuButton asChild className="h-10 text-base">
+                <a href={item.href}>
+                  <item.icon />
+                  <span>{item.name}</span>
                 </a>
               </SidebarMenuButton>
+              {item.items?.length ? (
+                <SidebarMenuSub>
+                  {item.items.map((item) => (
+                    <SidebarMenuSubItem key={item.name}>
+                      <SidebarMenuSubButton asChild className="h-10 text-base">
+                        <a href={item.href}>
+                          <item.icon />
+                          <span>{item.name}</span>
+                        </a>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  ))}
+                </SidebarMenuSub>
+              ) : null}
             </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <a href="/map" className="font-medium">
-                  <Map />
-                  Map
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <a href="/explore" className="font-medium">
-                  <Search />
-                  Find Users
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <a href={`/profile`} className="font-medium">
-                  <User />
-                  Profile
-                </a>
-              </SidebarMenuButton>
-              <SidebarMenuSub>
-                <SidebarMenuSubItem>
-                  <SidebarMenuSubButton asChild>
-                    <a href={`/profile/manage`} className="font-small">
-                      <FolderKanban />
-                      Manage
-                    </a>
-                  </SidebarMenuSubButton>
-                </SidebarMenuSubItem>
-              </SidebarMenuSub>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
+          ))}
+        </SidebarMenu>
       </SidebarContent>
       <SidebarRail />
     </Sidebar>

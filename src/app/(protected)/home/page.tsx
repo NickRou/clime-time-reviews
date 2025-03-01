@@ -1,5 +1,4 @@
 import { redirect } from 'next/navigation'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import CreatePost from '@/app/(protected)/home/_components/CreatePost'
 import { auth } from '@clerk/nextjs/server'
 import { UserPostFeed } from './_components/UserPostFeed'
@@ -14,20 +13,15 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-8">
-      <Tabs defaultValue="for-you" className="w-full">
-        <TabsList className="grid w-full grid-cols-1 max-w-3xl mx-auto">
-          <TabsTrigger value="for-you">Following</TabsTrigger>
-        </TabsList>
-        <TabsContent value="for-you">
-          <div className="grid max-w-3xl mx-auto">
-            <CreatePost />
-            <Suspense fallback={<LoadingRing />}>
-              <UserPostFeed currentUserId={userId} />
-            </Suspense>
-          </div>
-        </TabsContent>
-      </Tabs>
+    <div className="container mx-auto max-w-3xl">
+      <div className="grid">
+        <div className="p-4">
+          <CreatePost />
+        </div>
+        <Suspense fallback={<LoadingRing />}>
+          <UserPostFeed currentUserId={userId} />
+        </Suspense>
+      </div>
     </div>
   )
 }
