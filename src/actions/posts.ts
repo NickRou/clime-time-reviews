@@ -3,29 +3,34 @@
 import { Images, Posts } from '@/db/schema'
 import { db } from '@/db/drizzle'
 import { eq, and, inArray } from 'drizzle-orm'
-import { Post } from '@/lib/types'
+import { Post, PostState } from '@/lib/types'
 import { Follows } from '@/db/schema'
 import { Likes } from '@/db/schema'
 import { usePlaceDetails } from '@/actions/places'
 import { getCurrentUserIdOrThrow } from './clerk'
 import { deleteImagesFromUploadThing } from './images'
 
-export async function createPost(formData: FormData) {
+export async function createPost(postState: PostState) {
   const userId = await getCurrentUserIdOrThrow()
 
-  const locReview = formData.get('locReview') as string
-  const locContent = formData.get('locContent') as string
-  const locCost = formData.get('locCost') as string
-  const locPlaceId = formData.get('locPlaceId') as string
+  if (
+    postState.loc_place_id === '' ||
+    postState.loc_name === '' ||
+    postState.loc_address === '' ||
+    postState.loc_cost === 0 ||
+    postState.loc_content === ''
+  ) {
+    throw new Error('Missing required fields!')
+  }
 
   const result = await db
     .insert(Posts)
     .values({
       user_id: userId,
-      loc_place_id: locPlaceId,
-      loc_review: parseInt(locReview),
-      loc_content: locContent,
-      loc_cost: parseInt(locCost),
+      loc_place_id: postState.loc_place_id,
+      loc_review: postState.loc_review,
+      loc_content: postState.loc_content,
+      loc_cost: postState.loc_cost,
     })
     .returning({ post_id: Posts.post_id })
 

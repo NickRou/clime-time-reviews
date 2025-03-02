@@ -29,3 +29,12 @@ export type Like = {
 export type Image = {
   image_url: string
 }
+
+export type PostState = {
+  loc_place_id: string
+  loc_name: string
+  loc_address: string
+  loc_cost: number
+  loc_review: number
+  loc_content: string
+}
