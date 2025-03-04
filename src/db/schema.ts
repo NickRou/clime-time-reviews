@@ -85,6 +85,7 @@ export const PostTags = pgTable(
     post_id: uuid('post_id')
       .notNull()
       .references(() => Posts.post_id),
+    createTs: timestamp('create_ts').defaultNow().notNull(),
   },
   (table) => {
     return {
