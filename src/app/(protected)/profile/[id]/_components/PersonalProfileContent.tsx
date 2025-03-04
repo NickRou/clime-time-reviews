@@ -8,11 +8,13 @@ import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { UserPlus, Users } from 'lucide-react'
 import UserCard from '@/app/(protected)/_components/UserCard'
-import Link from 'next/link'
 import { Post, User } from '@/lib/types'
 import UserPost from '../../../_components/UserPost'
 import { followUser, removeFollower, unfollowUser } from '@/actions/follows'
 import { deletePost } from '@/actions/posts'
+import { useClerk } from '@clerk/nextjs'
+import { useTheme } from 'next-themes'
+import { dark } from '@clerk/themes'
 
 interface PersonalProfileContentProps {
   profileUser: User
@@ -31,6 +33,10 @@ export default function PersonalProfileContent({
   const [posts, setPosts] = useState<Post[]>(profilePosts)
   const [following, setFollowing] = useState<User[]>(profileFollowing)
   const [followers, setFollowers] = useState<User[]>(profileFollowers)
+
+  const { openUserProfile } = useClerk()
+  const { theme } = useTheme()
+  const clerkTheme = theme === 'dark' ? dark : undefined
 
   const onDelete = async (postId: string) => {
     await deletePost(postId)
@@ -90,9 +96,13 @@ export default function PersonalProfileContent({
             </div>
           </div>
           <div className="mt-4 sm:mt-0 sm:ml-auto">
-            <Link href={`/profile/${username}/manage`}>
-              <Button>Edit profile</Button>
-            </Link>
+            <Button
+              onClick={() =>
+                openUserProfile({ appearance: { baseTheme: clerkTheme } })
+              }
+            >
+              Edit profile
+            </Button>
           </div>
         </div>
       </div>

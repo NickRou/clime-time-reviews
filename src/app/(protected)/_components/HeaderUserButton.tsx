@@ -8,17 +8,16 @@ export default function HeaderUserButton() {
   const { theme } = useTheme()
   const clerkTheme = theme === 'dark' ? dark : undefined
 
-  const { user } = useUser()
-  if (!user || !user.username) {
+  const { isLoaded, user } = useUser()
+  if (!user || !isLoaded) {
     return <Skeleton className="h-8 w-8 rounded-full" />
   }
 
-  const { username } = user
   return (
     <UserButton
       appearance={{ baseTheme: clerkTheme }}
-      userProfileMode="navigation"
-      userProfileUrl={`/profile/${username}/manage`}
+      userProfileProps={{ appearance: { baseTheme: clerkTheme } }}
+      userProfileMode="modal"
     />
   )
 }

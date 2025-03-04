@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { FolderKanban, Home, Search, User, Map } from 'lucide-react'
+import { Home, Search, User, Map } from 'lucide-react'
 
 import {
   Sidebar,
@@ -10,15 +10,13 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   SidebarRail,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { Separator } from '@/components/ui/separator'
 
 const navItems = [
   { name: 'Home', icon: Home, href: '/home' },
@@ -28,7 +26,6 @@ const navItems = [
     name: 'Profile',
     icon: User,
     href: '/profile',
-    items: [{ name: 'Manage', icon: FolderKanban, href: '/profile/manage' }],
   },
 ]
 
@@ -53,6 +50,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <Image src={logoSrc} alt="Clime Time Reviews" width={112} height={50} />
         <SidebarTrigger />
       </SidebarHeader>
+      <Separator className="pl-3 pr-3" />
       <SidebarContent className="p-3">
         <SidebarMenu>
           {navItems.map((item) => (
@@ -63,20 +61,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <span>{item.name}</span>
                 </a>
               </SidebarMenuButton>
-              {item.items?.length ? (
-                <SidebarMenuSub>
-                  {item.items.map((item) => (
-                    <SidebarMenuSubItem key={item.name}>
-                      <SidebarMenuSubButton asChild className="h-10 text-base">
-                        <a href={item.href}>
-                          <item.icon />
-                          <span>{item.name}</span>
-                        </a>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
-                </SidebarMenuSub>
-              ) : null}
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
