@@ -17,6 +17,8 @@ export type Post = {
   loc_longitude: number
   loc_latitude: number
   images?: Image[]
+  likes?: Like[]
+  post_tags?: PostTag[]
   user: User
   createTs: Date
 }
@@ -37,4 +39,13 @@ export type PostState = {
   loc_cost: number
   loc_review: number
   loc_content: string
+}
+
+export type Tag = {
+  tag_id: string
+  tag_text: string
+}
+
+export type PostTag = {
+  tag: Tag
 }

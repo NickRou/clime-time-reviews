@@ -68,6 +68,12 @@ export async function getPostsByUserId(userId: string): Promise<Post[]> {
     with: {
       user: true,
       images: true,
+      likes: true,
+      post_tags: {
+        with: {
+          tag: true,
+        },
+      },
     },
     orderBy: (posts, { desc }) => [desc(posts.createTs)],
   })
@@ -101,6 +107,12 @@ export async function getFollowingPosts(): Promise<Post[]> {
     with: {
       user: true,
       images: true,
+      likes: true,
+      post_tags: {
+        with: {
+          tag: true,
+        },
+      },
     },
     orderBy: (posts, { desc }) => [desc(posts.createTs)],
   })

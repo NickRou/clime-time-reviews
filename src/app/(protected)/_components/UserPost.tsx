@@ -10,6 +10,7 @@ import { Post, Like } from '@/lib/types'
 import { useEffect, useState } from 'react'
 import { getPostLikes, likePost, unlikePost } from '@/actions/likes'
 import ImageCarousel from './HorizontalScrollImages'
+import { Badge } from '@/components/ui/badge'
 
 interface UserPostProps {
   post: Post
@@ -31,17 +32,21 @@ export default function UserPost({
     loc_cost,
     user,
     images,
+    likes,
+    post_tags,
     createTs,
   } = post
   const { username, first_name, last_name, image_url } = user
 
-  const [likes, setLikes] = useState<Like[]>([])
-  const [currentUserLiked, setCurrentUserLiked] = useState(false)
+  const [postLikes, setPostLikes] = useState<Like[]>(likes || [])
+  const [currentUserLiked, setCurrentUserLiked] = useState(
+    likes?.some((like) => like.user_id === currentUserId)
+  )
 
   useEffect(() => {
     const updateLikes = async () => {
       const res = await getPostLikes(post_id)
-      setLikes(res)
+      setPostLikes(res)
       setCurrentUserLiked(res.some((like) => like.user_id === currentUserId))
     }
     updateLikes()
@@ -50,11 +55,11 @@ export default function UserPost({
   const onLikeToggle = async (postId: string) => {
     if (currentUserLiked) {
       await unlikePost(postId)
-      setLikes(likes.filter((like) => like.post_id !== postId))
+      setPostLikes(postLikes.filter((like) => like.post_id !== postId))
       setCurrentUserLiked(false)
     } else {
       const res = await likePost(postId)
-      setLikes([...likes, res])
+      setPostLikes([...postLikes, res])
       setCurrentUserLiked(true)
     }
   }
@@ -108,6 +113,17 @@ export default function UserPost({
               </div>
             </div>
             <p className="mt-2 text-sm whitespace-pre-wrap">{loc_content}</p>
+            <div className="flex flex-wrap gap-2 pt-4">
+              {post_tags?.map((postTag) => (
+                <Badge
+                  key={postTag.tag.tag_id}
+                  variant="secondary"
+                  className="flex items-center gap-1 px-3 py-1 text-sm"
+                >
+                  {postTag.tag.tag_text}
+                </Badge>
+              ))}
+            </div>
             {images !== undefined && images.length > 0 && (
               <div className="pt-4">
                 <ImageCarousel
@@ -130,7 +146,7 @@ export default function UserPost({
                   currentUserLiked ? 'fill-red-500 stroke-red-500' : ''
                 }`}
               />
-              <span className="text-xs">{likes.length}</span>
+              <span className="text-xs">{postLikes.length}</span>
             </Button>
           </div>
         )}
@@ -138,7 +154,7 @@ export default function UserPost({
           <div className="mt-4 flex justify-end">
             <div className="flex items-center space-x-2">
               <Heart className={`w-4 h-4 mr-1`} />
-              <span className="text-xs">{likes.length}</span>
+              <span className="text-xs">{postLikes.length}</span>
               <Button
                 variant="ghost"
                 size="sm"

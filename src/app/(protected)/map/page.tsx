@@ -12,7 +12,7 @@ export default async function MapPage() {
 
   return (
     <div className="w-full h-[calc(100vh-4rem)]">
-      <GoogleMap posts={posts} />
+      <GoogleMap posts={posts} userId={userId} />
     </div>
   )
 }

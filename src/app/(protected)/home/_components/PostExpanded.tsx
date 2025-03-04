@@ -16,9 +16,11 @@ import {
   generatePermittedFileTypes,
 } from 'uploadthing/client'
 import { useUploadThing } from '@/lib/uploadthing'
-import { PostState } from '@/lib/types'
+import { PostState, Tag } from '@/lib/types'
 import { createPost } from '@/actions/posts'
 import { createImageUrls } from '@/actions/images'
+import TagsInput from '../../_components/TagsInput'
+import { createPostTags, createTags } from '@/actions/tags'
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
 
@@ -33,13 +35,18 @@ const initialPostState: PostState = {
 
 interface PostExpandedProps {
   handleCollapse: () => void
+  allTags: Tag[]
 }
 
-export default function PostExpanded({ handleCollapse }: PostExpandedProps) {
+export default function PostExpanded({
+  handleCollapse,
+  allTags,
+}: PostExpandedProps) {
   // component state
   const [postState, setPostState] = useState(initialPostState)
   const [imageFiles, setImageFiles] = useState<File[]>([])
   const [tempFileUrls, setTempFileUrls] = useState<string[]>([])
+  const [tags, setTags] = useState<Tag[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // upload thing
@@ -78,12 +85,22 @@ export default function PostExpanded({ handleCollapse }: PostExpandedProps) {
       // create post
       const post_id = await createPost(postState)
 
-      // upload images to upload thing
-      const uploadedImages = await startUpload(imageFiles)
+      // create tags
+      const existingTags = tags.filter((tag) => !tag.tag_id.startsWith('temp-'))
+      const addedTags = tags.filter((tag) => tag.tag_id.startsWith('temp-'))
+      const newTags: Tag[] = await createTags(addedTags)
 
-      // create image urls
-      if (uploadedImages && uploadedImages.length > 0) {
-        await createImageUrls(uploadedImages, post_id)
+      // create post tags
+      await createPostTags(existingTags.concat(newTags), post_id)
+
+      // upload images to upload thing
+      if (imageFiles.length > 0) {
+        const uploadedImages = await startUpload(imageFiles)
+
+        // create image urls
+        if (uploadedImages && uploadedImages.length > 0) {
+          await createImageUrls(uploadedImages, post_id)
+        }
       }
     } catch (error) {
       console.error('Error creating post: ', error)
@@ -95,10 +112,9 @@ export default function PostExpanded({ handleCollapse }: PostExpandedProps) {
       setIsSubmitting(false)
       handleCollapse() // collapses this expanded post
     }
-  }, [handleCollapse, postState, startUpload, imageFiles])
+  }, [handleCollapse, postState, startUpload, imageFiles, tags])
 
   const hasDefaultValues = () => {
-    console.log(postState)
     return (
       postState.loc_place_id === '' ||
       postState.loc_name === '' ||
@@ -182,6 +198,11 @@ export default function PostExpanded({ handleCollapse }: PostExpandedProps) {
               )}
               placeholder="Write your review..."
               className="bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800 min-h-[100px] whitespace-pre-wrap"
+            />
+            <TagsInput
+              allTags={allTags}
+              selectedTags={tags}
+              onTagsChange={setTags}
             />
             {imageFiles.length > 0 ? (
               <div>

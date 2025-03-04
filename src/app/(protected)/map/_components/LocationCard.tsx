@@ -5,16 +5,18 @@ import { Button } from '@/components/ui/button'
 import { X } from 'lucide-react'
 import { Post } from '@/lib/types'
 import { ScrollArea } from '../../../../components/ui/scroll-area'
-import LocationCardPostContent from './LocationCardPostContent'
+import UserPost from '../../_components/UserPost'
 
 interface LocationCardProps {
   posts: Post[]
+  userId: string
   isVisible: boolean
   setIsVisible: (isVisible: boolean) => void
 }
 
 export default function LocationCard({
   posts,
+  userId,
   isVisible,
   setIsVisible,
 }: LocationCardProps) {
@@ -49,7 +51,7 @@ export default function LocationCard({
           <ScrollArea className="max-h-[400px] overflow-auto">
             {posts.map((post) => (
               <div key={post.post_id} className="pt-2">
-                <LocationCardPostContent post={post} />
+                <UserPost post={post} currentUserId={userId} />
               </div>
             ))}
           </ScrollArea>

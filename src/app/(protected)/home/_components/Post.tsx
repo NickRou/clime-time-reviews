@@ -2,14 +2,15 @@
 
 import { useCallback, useState } from 'react'
 import PostNotExpanded from './PostNotExpanded'
-import { User } from '@/lib/types'
+import { Tag, User } from '@/lib/types'
 import PostExpanded from './PostExpanded'
 
 interface PostProps {
   currentUser: User
+  allTags: Tag[]
 }
 
-export default function Post({ currentUser }: PostProps) {
+export default function Post({ currentUser, allTags }: PostProps) {
   const [isExpanded, setIsExpanded] = useState(false)
 
   const handleExpand = useCallback(() => {
@@ -25,7 +26,7 @@ export default function Post({ currentUser }: PostProps) {
       {!isExpanded ? (
         <PostNotExpanded user={currentUser} handleExpand={handleExpand} />
       ) : (
-        <PostExpanded handleCollapse={handleCollapse} />
+        <PostExpanded handleCollapse={handleCollapse} allTags={allTags} />
       )}
     </div>
   )

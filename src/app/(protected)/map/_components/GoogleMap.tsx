@@ -11,9 +11,10 @@ import LocationCard from './LocationCard'
 
 interface GoogleMapProps {
   posts: Post[]
+  userId: string
 }
 
-export default function GoogleMap({ posts }: GoogleMapProps) {
+export default function GoogleMap({ posts, userId }: GoogleMapProps) {
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
 
   const postsMap = useMemo(() => {
@@ -74,6 +75,7 @@ export default function GoogleMap({ posts }: GoogleMapProps) {
     <APIProvider apiKey={GOOGLE_MAPS_API_KEY}>
       <LocationCard
         posts={cardLocationInfo || []}
+        userId={userId}
         isVisible={isCardVisible}
         setIsVisible={setIsCardVisible}
       />

@@ -70,6 +70,29 @@ export const Images = pgTable('images', {
   createTs: timestamp('create_ts').defaultNow().notNull(),
 })
 
+export const Tags = pgTable('tags', {
+  tag_id: uuid('tag_id').primaryKey().defaultRandom(),
+  tag_text: text('tag_text').notNull(),
+  createTs: timestamp('create_ts').defaultNow().notNull(),
+})
+
+export const PostTags = pgTable(
+  'post_tags',
+  {
+    tag_id: uuid('tag_id')
+      .notNull()
+      .references(() => Tags.tag_id),
+    post_id: uuid('post_id')
+      .notNull()
+      .references(() => Posts.post_id),
+  },
+  (table) => {
+    return {
+      pk: primaryKey({ columns: [table.tag_id, table.post_id] }),
+    }
+  }
+)
+
 export const imagesRelations = relations(Images, ({ one }) => ({
   post: one(Posts, {
     fields: [Images.post_id],
@@ -87,6 +110,23 @@ export const postsRelations = relations(Posts, ({ one, many }) => ({
     references: [Users.user_id],
   }),
   images: many(Images),
+  likes: many(Likes),
+  post_tags: many(PostTags),
+}))
+
+export const TagsRelations = relations(Tags, ({ many }) => ({
+  post_tags: many(PostTags),
+}))
+
+export const PostTagsRelations = relations(PostTags, ({ one }) => ({
+  tag: one(Tags, {
+    fields: [PostTags.tag_id],
+    references: [Tags.tag_id],
+  }),
+  post: one(Posts, {
+    fields: [PostTags.post_id],
+    references: [Posts.post_id],
+  }),
 }))
 
 export const usersRelations = relations(Users, ({ many }) => ({
