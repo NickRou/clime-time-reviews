@@ -20,7 +20,7 @@ export default function Header() {
   }, [theme])
 
   return (
-    <header className="fle sticky top-0 z-50 w-full items-center border-b bg-background">
+    <header className="flex sticky top-0 z-50 w-full items-center border-b bg-background">
       <div className="flex h-[--header-height] w-full items-center gap-2 px-4">
         <div className="flex items-center gap-2">
           <SidebarTrigger className="md:hidden" />

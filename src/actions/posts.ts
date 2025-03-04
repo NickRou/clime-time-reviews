@@ -1,6 +1,6 @@
 'use server'
 
-import { Images, Posts } from '@/db/schema'
+import { Images, Posts, PostTags } from '@/db/schema'
 import { db } from '@/db/drizzle'
 import { eq, and, inArray } from 'drizzle-orm'
 import { Post, PostState } from '@/lib/types'
@@ -53,6 +53,9 @@ export async function deletePost(postId: string) {
   await deleteImagesFromUploadThing(
     deletedImages.map((image) => image.image_url)
   )
+
+  // Delete all post tags associated with the post
+  await db.delete(PostTags).where(eq(PostTags.post_id, postId))
 
   // Then delete the post
   await db
