@@ -84,14 +84,14 @@ export default function UserPost({
           <div className="flex-1 min-w-0">
             <div className="flex items-center space-x-2">
               <Link href={`/profile/${username}`} className="hover:underline">
-                <p className="text-base font-medium">
+                <p className="text-sm md:text-base font-medium">
                   {first_name} {last_name}
                 </p>
               </Link>
               <Link href={`/profile/${username}`} className="hover:underline">
                 <p className="text-sm text-muted-foreground">@{username}</p>
               </Link>
-              <span className="text-base text-muted-foreground">
+              <span className="text-sm md:text-base text-muted-foreground">
                 •{' '}
                 {new Date(createTs).toLocaleDateString('en-US', {
                   month: 'short',
@@ -101,8 +101,10 @@ export default function UserPost({
               </span>
             </div>
             <div className="mt-4">
-              <p className="text-base font-medium">{loc_name}</p>
-              <p className="text-base text-muted-foreground">{loc_address}</p>
+              <p className="text-sm md:text-base font-medium">{loc_name}</p>
+              <p className="text-sm md:text-base text-muted-foreground">
+                {loc_address}
+              </p>
               <div className="flex items-center gap-1">
                 <StarRating rating={loc_review} />
                 {loc_cost > 0 && (
@@ -118,7 +120,7 @@ export default function UserPost({
                 <Badge
                   key={postTag.tag.tag_id}
                   variant="secondary"
-                  className="flex items-center gap-1 px-3 py-1 text-sm"
+                  className="flex items-center gap-1 px-3 py-1 text-xs"
                 >
                   {postTag.tag.tag_text}
                 </Badge>

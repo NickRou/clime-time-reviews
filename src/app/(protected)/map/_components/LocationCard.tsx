@@ -6,6 +6,7 @@ import { X } from 'lucide-react'
 import { Post } from '@/lib/types'
 import { ScrollArea } from '../../../../components/ui/scroll-area'
 import UserPost from '../../_components/UserPost'
+import { Separator } from '@/components/ui/separator'
 
 interface LocationCardProps {
   posts: Post[]
@@ -49,9 +50,10 @@ export default function LocationCard({
         </CardHeader>
         <CardContent className="p-0">
           <ScrollArea className="max-h-[400px] overflow-auto">
-            {posts.map((post) => (
+            {posts.map((post, index) => (
               <div key={post.post_id} className="pt-2">
                 <UserPost post={post} currentUserId={userId} />
+                {index < posts.length && <Separator />}
               </div>
             ))}
           </ScrollArea>

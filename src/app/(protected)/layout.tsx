@@ -13,7 +13,7 @@ export default function AuthenticatedLayout({
       <SidebarProvider className="flex flex-col">
         <Header />
         <div className="flex flex-1">
-          <AppSidebar variant="inset" />
+          <AppSidebar variant="floating" />
           <SidebarInset className="pt-[--header-height]">
             {children}
           </SidebarInset>

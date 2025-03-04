@@ -21,7 +21,7 @@ export default function UserExplorer({ users }: UserExplorerProps) {
   }
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-8">
+    <div className="container mx-auto max-w-3xl px-4 py-4">
       <Tabs defaultValue="who-to-follow" className="w-full">
         <TabsList className="grid w-full grid-cols-1 max-w-3xl mx-auto">
           <TabsTrigger value="who-to-follow">Who to Follow</TabsTrigger>
