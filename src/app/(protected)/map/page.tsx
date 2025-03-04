@@ -11,7 +11,7 @@ export default async function MapPage() {
   const posts = await getFollowingPosts()
 
   return (
-    <div className="w-[calc(100%)-2rem] h-[calc(100%)] md:pt-2 md:pr-2 md:pb-2 md:rounded-lg">
+    <div className="w-[calc(100%)-2rem] h-[calc(100%)] md:p-0.5">
       <GoogleMap posts={posts} userId={userId} />
     </div>
   )

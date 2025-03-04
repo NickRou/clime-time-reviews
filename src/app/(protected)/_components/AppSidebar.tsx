@@ -53,7 +53,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <Image src={logoSrc} alt="Clime Time Reviews" width={112} height={50} />
         <SidebarTrigger />
       </SidebarHeader>
-      <SidebarContent className="pl-1">
+      <SidebarContent className="p-3">
         <SidebarMenu>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.name}>

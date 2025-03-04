@@ -10,10 +10,13 @@ export default function StarRating({ rating }: StarRatingProps) {
   const fullStars = Math.floor(convertedRating)
   const hasHalfStar = convertedRating % 1 !== 0
   const emptyStars = 5 - Math.ceil(convertedRating)
+  const ratingString = hasHalfStar
+    ? convertedRating.toFixed(1)
+    : convertedRating
 
   return (
     <div className="flex items-center">
-      <span className="mr-1 text-sm text-gray-600">{rating / 2}/5</span>
+      <span className="mr-1 text-sm text-gray-600">{ratingString}/5</span>
       {[...Array(fullStars)].map((_, index) => (
         <Star key={index} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
       ))}

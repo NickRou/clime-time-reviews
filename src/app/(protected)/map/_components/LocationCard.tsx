@@ -7,6 +7,7 @@ import { Post } from '@/lib/types'
 import { ScrollArea } from '../../../../components/ui/scroll-area'
 import UserPost from '../../_components/UserPost'
 import { Separator } from '@/components/ui/separator'
+import DisplayStarRating from '../../_components/DisplayStarRating'
 
 interface LocationCardProps {
   posts: Post[]
@@ -26,8 +27,11 @@ export default function LocationCard({
   const locName = posts[0].loc_name
   const locAddress = posts[0].loc_address
 
+  const locationAverageRating =
+    posts.map((post) => post.loc_review).reduce((a, b) => a + b) / posts.length
+
   return (
-    <div className="absolute inset-auto z-10 p-4 w-full md:w-1/3">
+    <div className="absolute inset-auto z-10 p-4 w-full md:max-w-[600px] ">
       <Card className="relative overflow-auto">
         <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 border-b">
           <CardTitle className="text-lg font-bold pr-8">
@@ -35,6 +39,12 @@ export default function LocationCard({
               <div className="font-semibold">
                 <div>{locName}</div>
                 <div className="text-xs font-normal">{locAddress}</div>
+                <div className="flex gap-1">
+                  <DisplayStarRating rating={locationAverageRating} />
+                  <span className="text-base font-light">
+                    &#40;{posts.length}&#41;
+                  </span>
+                </div>
               </div>
             </div>
           </CardTitle>
