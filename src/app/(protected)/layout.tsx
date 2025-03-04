@@ -9,12 +9,14 @@ export default function AuthenticatedLayout({
   children: React.ReactNode
 }>) {
   return (
-    <div className="flex h-screen flex-col [--header-height:calc(theme(spacing.14))]">
-      <SidebarProvider className="flex flex-1 flex-col overflow-hidden">
+    <div className="[--header-height:calc(theme(spacing.14))]">
+      <SidebarProvider className="flex flex-col">
         <Header />
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-1">
           <AppSidebar variant="inset" />
-          <SidebarInset className="overflow-y-auto">{children}</SidebarInset>
+          <SidebarInset className="pt-[--header-height]">
+            {children}
+          </SidebarInset>
         </div>
       </SidebarProvider>
     </div>
