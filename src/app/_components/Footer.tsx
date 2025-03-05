@@ -1,7 +1,11 @@
 export default function Footer() {
   return (
-    <div className="mt-16 text-sm text-neutral-500 pb-6">
-      © {new Date().getFullYear()} Clime Time Reviews. All rights reserved.
-    </div>
+    <footer className="bg-background border-t border-border">
+      <div className="mx-auto max-w-7xl overflow-hidden px-6 py-10 lg:px-8">
+        <p className="text-center text-sm leading-5 text-muted-foreground">
+          © {new Date().getFullYear()} Clime Time Reviews. All rights reserved.
+        </p>
+      </div>
+    </footer>
   )
 }

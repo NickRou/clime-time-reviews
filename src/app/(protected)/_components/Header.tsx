@@ -1,6 +1,6 @@
 'use client'
 
-import { ThemeToggle } from './ThemeToggle'
+import { ThemeToggle } from '../../_components/ThemeToggle'
 import { SidebarTrigger } from '../../../components/ui/sidebar'
 import HeaderUserButton from './HeaderUserButton'
 import Image from 'next/image'

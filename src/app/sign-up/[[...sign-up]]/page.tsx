@@ -1,18 +1,19 @@
-import BackgroundCanvas from '@/app/_components/BackgroundCanvas'
-import { SignUp } from '@clerk/nextjs'
 import Footer from '@/app/_components/Footer'
-import { dark } from '@clerk/themes'
+import LandingHeader from '@/app/_components/LandingHeader'
+import ThemedSignUp from '@/app/_components/ThemedSignUp'
 
 export default function Page() {
   return (
-    <div className="relative h-screen w-full overflow-hidden">
-      <BackgroundCanvas />
-      <div className="relative z-10 flex h-full flex-col items-center px-4">
-        <div className="flex flex-1 flex-col items-center justify-center">
-          <SignUp appearance={{ baseTheme: dark }} />
+    <>
+      <LandingHeader />
+      <div className="flex flex-col min-h-screen -mt-[100px]">
+        <div className="flex items-center justify-center flex-grow">
+          <div className="">
+            <ThemedSignUp />
+          </div>
         </div>
         <Footer />
       </div>
-    </div>
+    </>
   )
 }
