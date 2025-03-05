@@ -1,7 +1,12 @@
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { UserJSON, WebhookEvent } from '@clerk/nextjs/server'
-import { createDbUser, deleteDbUser, updateDbUser } from '@/actions/users'
+import {
+  createDbUser,
+  deleteDbUser,
+  isUserVerified,
+  updateDbUser,
+} from '@/actions/users'
 
 export async function POST(req: Request) {
   const SIGNING_SECRET = process.env.SIGNING_SECRET
@@ -65,6 +70,7 @@ export async function POST(req: Request) {
       first_name,
       last_name,
       image_url,
+      is_verified: false, // user is not verified by default
     })
   } else if (eventType === 'user.updated') {
     if (!id || !username || !first_name || !last_name || !image_url) {
@@ -73,12 +79,15 @@ export async function POST(req: Request) {
       })
     }
 
+    const isVerified = await isUserVerified(id)
+
     await updateDbUser({
       user_id: id,
       username,
       first_name,
       last_name,
       image_url,
+      is_verified: isVerified,
     })
   } else if (eventType === 'user.deleted') {
     await deleteDbUser(id)

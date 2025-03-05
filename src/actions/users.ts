@@ -109,3 +109,17 @@ export async function deleteDbUser(id: string) {
   // Delete the user
   await db.delete(Users).where(eq(Users.user_id, id))
 }
+
+export async function isUserVerified(userId: string): Promise<boolean> {
+  await getCurrentUserIdOrThrow()
+
+  const user = await db.query.Users.findFirst({
+    where: eq(Users.user_id, userId),
+  })
+
+  if (!user) {
+    throw new Error(`User '${userId}' not found`)
+  }
+
+  return user.is_verified
+}
