@@ -152,20 +152,22 @@ export default function UserPost({
             </Button>
           </div>
         )}
-        {currentUserId === user.user_id && onDelete && (
+        {currentUserId === user.user_id && (
           <div className="mt-4 flex justify-end">
             <div className="flex items-center space-x-2">
               <Heart className={`w-4 h-4 mr-1`} />
               <span className="text-xs">{postLikes.length}</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-muted-foreground hover:text-primary"
-                onClick={() => onDelete(post_id)}
-              >
-                <Trash2 className="w-4 h-4 mr-1" />
-                Delete
-              </Button>
+              {onDelete && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground hover:text-primary"
+                  onClick={() => onDelete(post_id)}
+                >
+                  <Trash2 className="w-4 h-4 mr-1" />
+                  Delete
+                </Button>
+              )}
             </div>
           </div>
         )}

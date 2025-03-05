@@ -8,19 +8,42 @@ import {
 } from '@vis.gl/react-google-maps'
 import { useCallback, useMemo, useState } from 'react'
 import LocationCard from './LocationCard'
+import PostsFilter from './PostsFilter'
 
 interface GoogleMapProps {
   posts: Post[]
+  userPosts: Post[]
   userId: string
 }
 
-export default function GoogleMap({ posts, userId }: GoogleMapProps) {
+export interface BoundsWithPadding extends google.maps.LatLngBoundsLiteral {
+  padding?: number
+}
+
+const calculateBounds = (posts: Post[]): BoundsWithPadding | undefined => {
+  if (posts.length === 0) return undefined
+
+  return {
+    east: Math.max(...posts.map((p) => p.loc_longitude)),
+    west: Math.min(...posts.map((p) => p.loc_longitude)),
+    north: Math.max(...posts.map((p) => p.loc_latitude)),
+    south: Math.min(...posts.map((p) => p.loc_latitude)),
+    padding: 20, // Add 20px padding around bounds
+  }
+}
+
+export default function GoogleMap({
+  posts,
+  userPosts,
+  userId,
+}: GoogleMapProps) {
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
+  const [activePosts, setActivePosts] = useState<Post[]>(posts)
 
   const postsMap = useMemo(() => {
     const map: { [key: string]: Post[] } = {}
 
-    posts.forEach((post) => {
+    activePosts.forEach((post) => {
       const key = `${post.loc_latitude},${post.loc_longitude}`
       if (!map[key]) {
         map[key] = [post]
@@ -30,17 +53,11 @@ export default function GoogleMap({ posts, userId }: GoogleMapProps) {
     })
 
     return map
-  }, [posts]) // Include 'posts' to avoid exhaustive deps warning
+  }, [activePosts]) // Include 'posts' to avoid exhaustive deps warning
 
   // Calculate bounds that contain all markers
-  const defaultBounds = posts.length
-    ? {
-        east: Math.max(...posts.map((p) => p.loc_longitude)),
-        west: Math.min(...posts.map((p) => p.loc_longitude)),
-        north: Math.max(...posts.map((p) => p.loc_latitude)),
-        south: Math.min(...posts.map((p) => p.loc_latitude)),
-        padding: 20, // Add 20px padding around bounds
-      }
+  const defaultBounds = activePosts.length
+    ? calculateBounds(activePosts)
     : undefined
 
   const [cameraProps, setCameraProps] = useState<MapCameraProps | null>(null)
@@ -71,6 +88,20 @@ export default function GoogleMap({ posts, userId }: GoogleMapProps) {
     }
   }, [isCardVisible])
 
+  const handleFilterChange = useCallback(
+    (value: string) => {
+      if (value === 'following') {
+        setActivePosts(posts)
+        return calculateBounds(posts)
+      } else if (value === 'personal') {
+        setActivePosts(userPosts)
+        return calculateBounds(userPosts)
+      }
+      return undefined
+    },
+    [posts, userPosts]
+  )
+
   return (
     <APIProvider apiKey={GOOGLE_MAPS_API_KEY}>
       <LocationCard
@@ -79,6 +110,7 @@ export default function GoogleMap({ posts, userId }: GoogleMapProps) {
         isVisible={isCardVisible}
         setIsVisible={setIsCardVisible}
       />
+      <PostsFilter className="z-10" onFilterChange={handleFilterChange} />
       <Map
         {...cameraProps}
         defaultBounds={defaultBounds}
@@ -90,6 +122,7 @@ export default function GoogleMap({ posts, userId }: GoogleMapProps) {
         mapId="reviews-map"
         gestureHandling={'greedy'} // Improves mobile handling
         onDrag={handleMapClick}
+        onClick={handleMapClick}
       >
         {Object.entries(postsMap).map(([key, posts]) => (
           <Marker

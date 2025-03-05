@@ -50,7 +50,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {...props}
     >
       <SidebarHeader className="flex flex-row items-center justify-between md:hidden">
-        <Image src={logoSrc} alt="Clime Time Reviews" width={112} height={50} />
+        <Image
+          src={logoSrc}
+          alt="Clime Time Reviews"
+          width={112}
+          height={50}
+          priority
+        />
         <SidebarTrigger />
       </SidebarHeader>
       <Separator className="pl-3 pr-3" />

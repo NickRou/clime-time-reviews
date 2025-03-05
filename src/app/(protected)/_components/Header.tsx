@@ -29,6 +29,7 @@ export default function Header() {
             alt="Clime Time Reviews"
             width={112}
             height={50}
+            priority
           />
         </div>
         <div className="ml-auto flex items-center gap-4">

@@ -31,7 +31,7 @@ export default function LocationCard({
     posts.map((post) => post.loc_review).reduce((a, b) => a + b) / posts.length
 
   return (
-    <div className="absolute inset-auto z-10 p-4 w-full md:max-w-[600px] ">
+    <div className="absolute inset-auto z-20 p-4 w-full md:max-w-[600px]">
       <Card className="relative overflow-auto">
         <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 border-b">
           <CardTitle className="text-lg font-bold pr-8">
