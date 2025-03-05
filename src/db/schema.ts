@@ -5,6 +5,7 @@ import {
   integer,
   uuid,
   primaryKey,
+  boolean,
 } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
@@ -55,6 +56,7 @@ export const Users = pgTable('users', {
   first_name: text('first_name').notNull(),
   last_name: text('last_name').notNull(),
   image_url: text('image_url').notNull(),
+  is_verified: boolean('is_verified').default(false).notNull(),
   createTs: timestamp('create_ts').defaultNow().notNull(),
 })
 

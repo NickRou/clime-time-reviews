@@ -4,6 +4,7 @@ export type User = {
   last_name: string
   username: string
   image_url: string
+  is_verified: boolean
 }
 
 export type Post = {

@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { User } from '@/lib/types'
 import Link from 'next/link'
+import UserVerifiedCheck from './UserVerifiedCheck'
 
 interface UserCardProps {
   user: User
@@ -20,7 +21,7 @@ export default function UserCard({
   showRemoveButton = false,
   onRemove,
 }: UserCardProps) {
-  const { username, first_name, last_name, image_url } = user
+  const { username, first_name, last_name, image_url, is_verified } = user
   const name = `${first_name} ${last_name}`
   return (
     <div className="flex items-center justify-between p-4">
@@ -30,7 +31,10 @@ export default function UserCard({
           <AvatarFallback>{name}</AvatarFallback>
         </Avatar>
         <div className="ml-4">
-          <p className="text-sm font-medium hover:underline">{name}</p>
+          <div className="flex flex-row gap-1 items-end">
+            <p className="text-sm font-medium hover:underline">{name}</p>
+            {is_verified && <UserVerifiedCheck className="w-4 h-4" />}
+          </div>
           <p className="text-sm text-muted-foreground hover:underline">
             @{username}
           </p>

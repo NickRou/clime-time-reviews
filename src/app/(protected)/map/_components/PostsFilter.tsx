@@ -30,11 +30,9 @@ export default function MapFilter({
       const newBounds = onFilterChange(value)
       if (!newBounds) return
 
-      console.log(newBounds)
       const { east, west, north, south, padding } = newBounds
       map?.fitBounds({ east, west, north, south }, padding)
       map?.panToBounds({ east, west, north, south }, padding)
-      console.log('done setting bounds')
     }
   }
 

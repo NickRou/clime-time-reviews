@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react'
 import { getPostLikes, likePost, unlikePost } from '@/actions/likes'
 import ImageCarousel from './HorizontalScrollImages'
 import { Badge } from '@/components/ui/badge'
+import UserVerifiedCheck from './UserVerifiedCheck'
 
 interface UserPostProps {
   post: Post
@@ -36,7 +37,7 @@ export default function UserPost({
     post_tags,
     createTs,
   } = post
-  const { username, first_name, last_name, image_url } = user
+  const { username, first_name, last_name, image_url, is_verified } = user
 
   const [postLikes, setPostLikes] = useState<Like[]>(likes || [])
   const [currentUserLiked, setCurrentUserLiked] = useState(
@@ -83,10 +84,16 @@ export default function UserPost({
           </Link>
           <div className="flex-1 min-w-0">
             <div className="flex items-center space-x-2">
-              <Link href={`/profile/${username}`} className="hover:underline">
+              <Link
+                href={`/profile/${username}`}
+                className="hover:underline flex flex-row items-end gap-1"
+              >
                 <p className="text-sm md:text-base font-medium">
                   {first_name} {last_name}
                 </p>
+                {is_verified && (
+                  <UserVerifiedCheck className="w-4 h-4 md:w-5 md:h-5" />
+                )}
               </Link>
               <Link href={`/profile/${username}`} className="hover:underline">
                 <p className="text-sm text-muted-foreground">@{username}</p>

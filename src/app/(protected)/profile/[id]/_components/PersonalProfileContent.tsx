@@ -15,6 +15,7 @@ import { deletePost } from '@/actions/posts'
 import { useClerk } from '@clerk/nextjs'
 import { useTheme } from 'next-themes'
 import { dark } from '@clerk/themes'
+import UserVerifiedCheck from '@/app/(protected)/_components/UserVerifiedCheck'
 
 interface PersonalProfileContentProps {
   profileUser: User
@@ -29,7 +30,8 @@ export default function PersonalProfileContent({
   profileFollowing,
   profileFollowers,
 }: PersonalProfileContentProps) {
-  const { user_id, username, first_name, last_name, image_url } = profileUser
+  const { user_id, username, first_name, last_name, image_url, is_verified } =
+    profileUser
   const [posts, setPosts] = useState<Post[]>(profilePosts)
   const [following, setFollowing] = useState<User[]>(profileFollowing)
   const [followers, setFollowers] = useState<User[]>(profileFollowers)
@@ -76,9 +78,18 @@ export default function PersonalProfileContent({
             <AvatarFallback>JD</AvatarFallback>
           </Avatar>
           <div className="mt-4 sm:mt-0 sm:ml-4 text-center sm:text-left">
-            <h1 className="text-2xl font-bold">
-              {first_name} {last_name}
-            </h1>
+            {is_verified ? (
+              <div className="flex flex-row gap-1 justify-center pl-8 sm:justify-normal sm:pl-0">
+                <h1 className="text-2xl font-bold">
+                  {first_name} {last_name}
+                </h1>
+                <UserVerifiedCheck className="w-8 h-8" />{' '}
+              </div>
+            ) : (
+              <h1 className="text-2xl font-bold">
+                {first_name} {last_name}
+              </h1>
+            )}
             <p className="text-muted-foreground">@{username}</p>
             <div className="flex mt-2 space-x-4">
               <div className="flex items-center">
