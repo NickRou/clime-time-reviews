@@ -17,6 +17,8 @@ import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Separator } from '@/components/ui/separator'
+import { usePathname } from 'next/navigation'
+import { getLastPathComponent } from '@/lib/utils'
 
 const navItems = [
   { name: 'Home', icon: Home, href: '/home' },
@@ -32,6 +34,7 @@ const navItems = [
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { theme } = useTheme()
   const [logoSrc, setLogoSrc] = useState<string>('/logo-white-text.png')
+  const currentNavItem = getLastPathComponent(usePathname())
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -56,10 +59,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           {navItems.map((item) => (
             <SidebarMenuItem key={item.name}>
               <SidebarMenuButton asChild className="h-10 text-base">
-                <a href={item.href}>
-                  <item.icon />
-                  <span>{item.name}</span>
-                </a>
+                {item.href === `/${currentNavItem}` ? (
+                  <a href={item.href}>
+                    <item.icon style={{ strokeWidth: 3.5 }} />
+                    <span className="font-bold">{item.name}</span>
+                  </a>
+                ) : (
+                  <a href={item.href}>
+                    <item.icon />
+                    <span>{item.name}</span>
+                  </a>
+                )}
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
