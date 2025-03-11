@@ -10,13 +10,13 @@ What can you do with this web app?
 
 - Post reviews of places you've been (obviously)
 - See a feed of reviews from your friends (they will see your reviews too!)
-- See you or your friends' reviews visualized on google maps
+- See reviews visualized on google maps
 
 ## What is this project build with?
 
 - [![Next.js](https://img.shields.io/badge/Next.js-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
 - [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-- [![Shadcn UI](https://img.shields.io/badge/Shadcn_UI-000000?logo=shadcn&logoColor=white)](https://shadcn.dev/)
+- [![Shadcn UI](https://img.shields.io/badge/Shadcn_UI-000000?logo=shadcn&logoColor=white)](https://ui.shadcn.com/)
 - [![Neon](https://img.shields.io/badge/Neon-000000?logo=neon&logoColor=white)](https://neon.tech/)
 - [![Drizzle](https://img.shields.io/badge/Drizzle-000000?logo=drizzle&logoColor=white)](https://orm.drizzle.team/)
 - [![Clerk](https://img.shields.io/badge/Clerk-000000?logo=clerk&logoColor=white)](https://clerk.dev/)
