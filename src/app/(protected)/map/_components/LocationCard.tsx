@@ -59,7 +59,7 @@ export default function LocationCard({
           </Button>
         </CardHeader>
         <CardContent className="p-0">
-          <ScrollArea className="max-h-[400px] overflow-auto">
+          <ScrollArea className="max-h-[400px] md:max-h-[600px] overflow-auto">
             {posts.map((post, index) => (
               <div key={post.post_id} className="pt-2">
                 <UserPost post={post} currentUserId={userId} />
