@@ -70,9 +70,7 @@ export async function getNonFollowedUsers(): Promise<User[]> {
 
 export async function createDbUser(user: User) {
   // TODO: get response form db insert and validate
-  console.log('createDbUser', user)
   await db.insert(Users).values(user)
-  console.log('createDbUser done')
 }
 
 export async function updateDbUser(user: User) {
